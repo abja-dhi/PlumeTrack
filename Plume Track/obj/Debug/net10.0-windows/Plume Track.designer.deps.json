@@ -1,0 +1,403 @@
+{
+  "runtimeTarget": {
+    "name": ".NETCoreApp,Version=v10.0",
+    "signature": ""
+  },
+  "compilationOptions": {},
+  "targets": {
+    ".NETCoreApp,Version=v10.0": {
+      "Antlr4.Runtime.Standard/4.7.2": {
+        "runtime": {
+          "lib/netstandard1.3/Antlr4.Runtime.Standard.dll": {
+            "assemblyVersion": "4.7.2.0",
+            "fileVersion": "4.7.2.0"
+          }
+        }
+      },
+      "DHI.corlib/1.0.1": {
+        "runtime": {
+          "lib/netstandard2.0/DHI.corlib.dll": {
+            "assemblyVersion": "1.0.0.0",
+            "fileVersion": "22.1.0.18130"
+          }
+        }
+      },
+      "DHI.DFS/23.0.3": {
+        "dependencies": {
+          "DHI.EUM": "23.0.3",
+          "DHI.Projections": "23.0.3"
+        },
+        "runtime": {
+          "lib/netstandard2.0/DHI.Generic.MikeZero.DFS.dll": {
+            "assemblyVersion": "23.0.0.0",
+            "fileVersion": "23.0.3.18318"
+          }
+        },
+        "runtimeTargets": {
+          "runtimes/win-x64/native/ufs.dll": {
+            "rid": "win-x64",
+            "assetType": "native",
+            "fileVersion": "23.0.3.18318"
+          }
+        }
+      },
+      "DHI.DHIfl/23.0.3": {
+        "runtimeTargets": {
+          "runtimes/win-x64/native/DHIfl.dll": {
+            "rid": "win-x64",
+            "assetType": "native",
+            "fileVersion": "23.0.3.18318"
+          }
+        }
+      },
+      "DHI.EUM/23.0.3": {
+        "dependencies": {
+          "DHI.DHIfl": "23.0.3",
+          "DHI.PFS": "23.0.3"
+        },
+        "runtime": {
+          "lib/netstandard2.0/DHI.Generic.MikeZero.EUM.dll": {
+            "assemblyVersion": "23.0.0.0",
+            "fileVersion": "23.0.3.18318"
+          }
+        },
+        "runtimeTargets": {
+          "runtimes/win-x64/native/EUM.ubg": {
+            "rid": "win-x64",
+            "assetType": "native",
+            "fileVersion": "0.0.0.0"
+          },
+          "runtimes/win-x64/native/EUM.xml": {
+            "rid": "win-x64",
+            "assetType": "native",
+            "fileVersion": "0.0.0.0"
+          },
+          "runtimes/win-x64/native/EUM_Default_Units.ubg": {
+            "rid": "win-x64",
+            "assetType": "native",
+            "fileVersion": "0.0.0.0"
+          },
+          "runtimes/win-x64/native/EUM_US_Units.ubg": {
+            "rid": "win-x64",
+            "assetType": "native",
+            "fileVersion": "0.0.0.0"
+          },
+          "runtimes/win-x64/native/eum.dll": {
+            "rid": "win-x64",
+            "assetType": "native",
+            "fileVersion": "23.0.3.18318"
+          }
+        }
+      },
+      "DHI.Math.Expression/23.0.3": {
+        "dependencies": {
+          "Antlr4.Runtime.Standard": "4.7.2"
+        },
+        "runtime": {
+          "lib/netstandard2.0/DHI.Math.Expression.dll": {
+            "assemblyVersion": "23.0.0.0",
+            "fileVersion": "23.0.3.18318"
+          }
+        }
+      },
+      "DHI.Mathematics/1.0.0": {
+        "dependencies": {
+          "DHI.corlib": "1.0.1"
+        },
+        "runtime": {
+          "lib/netstandard2.0/DHI.Mathematics.dll": {
+            "assemblyVersion": "1.0.0.0",
+            "fileVersion": "22.0.3.17314"
+          }
+        }
+      },
+      "DHI.Mike1D.Generic/23.0.3": {
+        "dependencies": {
+          "DHI.corlib": "1.0.1",
+          "DHI.DFS": "23.0.3",
+          "DHI.EUM": "23.0.3",
+          "DHI.PFS": "23.0.3",
+          "NetTopologySuite": "2.0.0"
+        },
+        "runtime": {
+          "lib/netstandard2.0/DHI.Mike1D.Generic.dll": {
+            "assemblyVersion": "23.0.0.0",
+            "fileVersion": "23.0.3.18318"
+          }
+        }
+      },
+      "DHI.Mike1D.ResultDataAccess/23.0.3": {
+        "dependencies": {
+          "DHI.corlib": "1.0.1",
+          "DHI.DFS": "23.0.3",
+          "DHI.EUM": "23.0.3",
+          "DHI.Mike1D.Generic": "23.0.3",
+          "NetTopologySuite": "2.0.0"
+        },
+        "runtime": {
+          "lib/netstandard2.0/DHI.Mike1D.ResultDataAccess.dll": {
+            "assemblyVersion": "23.0.0.0",
+            "fileVersion": "23.0.3.18318"
+          }
+        }
+      },
+      "DHI.MikeCore/23.0.3": {
+        "dependencies": {
+          "DHI.corlib": "1.0.1",
+          "DHI.DFS": "23.0.3",
+          "DHI.DHIfl": "23.0.3",
+          "DHI.EUM": "23.0.3",
+          "DHI.Math.Expression": "23.0.3",
+          "DHI.Mathematics": "1.0.0",
+          "DHI.Mike1D.Generic": "23.0.3",
+          "DHI.Mike1D.ResultDataAccess": "23.0.3",
+          "DHI.PFS": "23.0.3",
+          "DHI.Projections": "23.0.3"
+        }
+      },
+      "DHI.PFS/23.0.3": {
+        "runtime": {
+          "lib/netstandard2.0/DHI.PFS.dll": {
+            "assemblyVersion": "23.0.0.0",
+            "fileVersion": "23.0.3.18318"
+          }
+        },
+        "runtimeTargets": {
+          "runtimes/win-x64/native/ams2004.dll": {
+            "rid": "win-x64",
+            "assetType": "native",
+            "fileVersion": "23.0.3.18318"
+          },
+          "runtimes/win-x64/native/amsT2004.dll": {
+            "rid": "win-x64",
+            "assetType": "native",
+            "fileVersion": "23.0.3.18318"
+          },
+          "runtimes/win-x64/native/pfs2004.dll": {
+            "rid": "win-x64",
+            "assetType": "native",
+            "fileVersion": "23.0.3.18318"
+          }
+        }
+      },
+      "DHI.Projections/23.0.3": {
+        "dependencies": {
+          "DHI.DHIfl": "23.0.3",
+          "DHI.PFS": "23.0.3"
+        },
+        "runtime": {
+          "lib/netstandard2.0/DHI.Projections.dll": {
+            "assemblyVersion": "23.0.0.0",
+            "fileVersion": "23.0.3.18318"
+          }
+        },
+        "runtimeTargets": {
+          "runtimes/win-x64/native/MzCart.dll": {
+            "rid": "win-x64",
+            "assetType": "native",
+            "fileVersion": "23.0.3.18318"
+          },
+          "runtimes/win-x64/native/ellipsoid.pfs": {
+            "rid": "win-x64",
+            "assetType": "native",
+            "fileVersion": "0.0.0.0"
+          },
+          "runtimes/win-x64/native/map_projection.pfs": {
+            "rid": "win-x64",
+            "assetType": "native",
+            "fileVersion": "0.0.0.0"
+          },
+          "runtimes/win-x64/native/state_plane_nad27.pfs": {
+            "rid": "win-x64",
+            "assetType": "native",
+            "fileVersion": "0.0.0.0"
+          },
+          "runtimes/win-x64/native/state_plane_nad83.pfs": {
+            "rid": "win-x64",
+            "assetType": "native",
+            "fileVersion": "0.0.0.0"
+          }
+        }
+      },
+      "Microsoft.Web.WebView2/1.0.3595.46": {
+        "runtimeTargets": {
+          "runtimes/win-arm64/native/WebView2Loader.dll": {
+            "rid": "win-arm64",
+            "assetType": "native",
+            "fileVersion": "1.0.3595.46"
+          },
+          "runtimes/win-x64/native/WebView2Loader.dll": {
+            "rid": "win-x64",
+            "assetType": "native",
+            "fileVersion": "1.0.3595.46"
+          },
+          "runtimes/win-x86/native/WebView2Loader.dll": {
+            "rid": "win-x86",
+            "assetType": "native",
+            "fileVersion": "1.0.3595.46"
+          }
+        }
+      },
+      "NetTopologySuite/2.0.0": {
+        "runtime": {
+          "lib/netstandard2.0/NetTopologySuite.dll": {
+            "assemblyVersion": "2.0.0.0",
+            "fileVersion": "2.0.0.0"
+          }
+        }
+      },
+      "NetTopologySuite.Features/2.0.0": {
+        "dependencies": {
+          "NetTopologySuite": "2.0.0"
+        },
+        "runtime": {
+          "lib/netstandard2.0/NetTopologySuite.Features.dll": {
+            "assemblyVersion": "2.0.0.0",
+            "fileVersion": "2.0.0.0"
+          }
+        }
+      },
+      "NetTopologySuite.IO.ShapeFile/2.1.0": {
+        "dependencies": {
+          "NetTopologySuite": "2.0.0",
+          "NetTopologySuite.Features": "2.0.0"
+        },
+        "runtime": {
+          "lib/netstandard2.0/NetTopologySuite.IO.ShapeFile.dll": {
+            "assemblyVersion": "2.0.0.0",
+            "fileVersion": "2.0.0.0"
+          }
+        }
+      },
+      "pythonnet/3.0.5": {
+        "runtime": {
+          "lib/netstandard2.0/Python.Runtime.dll": {
+            "assemblyVersion": "3.0.5.0",
+            "fileVersion": "3.0.5.0"
+          }
+        }
+      }
+    }
+  },
+  "libraries": {
+    "Antlr4.Runtime.Standard/4.7.2": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-vT7inRjayVvSQ+tvm9h9Ovygz5Nh9DgvTkt5w6G6M8Wpsqz6rQpou/pLsShwrrZTOjHgCiizbWjO3G/NzMihyw==",
+      "path": "antlr4.runtime.standard/4.7.2",
+      "hashPath": "antlr4.runtime.standard.4.7.2.nupkg.sha512"
+    },
+    "DHI.corlib/1.0.1": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-szGMVAHt6sBUwLB4MOpwKQQQZjnAMr2nbMdxBikg150yO6McHe0gBnoVNpUIgxQa71U2s/i2axmpch5iZdsnVw==",
+      "path": "dhi.corlib/1.0.1",
+      "hashPath": "dhi.corlib.1.0.1.nupkg.sha512"
+    },
+    "DHI.DFS/23.0.3": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-N/QnqI/s6aFAEErmOYtq22DnQJk54Ytl4NDdvCJoHPv9UkOGe7ZuTewft1sNJWKMSFs6UcTXtM7+kIn50FpcFQ==",
+      "path": "dhi.dfs/23.0.3",
+      "hashPath": "dhi.dfs.23.0.3.nupkg.sha512"
+    },
+    "DHI.DHIfl/23.0.3": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-F0Pk2s6NyM8/mQjO6HEZbVFWhVSmPKvCHPcHWhPwqzEfhpVMwGHbYgHmGGj7As+2AobFou8+ckw7nKXT0rsI9w==",
+      "path": "dhi.dhifl/23.0.3",
+      "hashPath": "dhi.dhifl.23.0.3.nupkg.sha512"
+    },
+    "DHI.EUM/23.0.3": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-CJqkGLEmqGh/E/fG67XkmuBfPHh7XsVdKN6U6hMY6qDwrjetHpvi0LeQsyzOYXubC/Nwy91BGNBfR/6syz1exQ==",
+      "path": "dhi.eum/23.0.3",
+      "hashPath": "dhi.eum.23.0.3.nupkg.sha512"
+    },
+    "DHI.Math.Expression/23.0.3": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-0JHfS1qwBa6VgUoPBb8rrL/GZT1MF4DzfMIR5fZgvpc0teGyRqkl9qKjvkEkolF7vFEpQE5Biu7t41Ryzw6qwQ==",
+      "path": "dhi.math.expression/23.0.3",
+      "hashPath": "dhi.math.expression.23.0.3.nupkg.sha512"
+    },
+    "DHI.Mathematics/1.0.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-8iM2MV9XROG11GZCD42rtTJCzSNHw9M8v1vnQINUjr9qt6QBjyhH1qob5nsCzaRtU5RRo6LgQLwBxz1reoFq0w==",
+      "path": "dhi.mathematics/1.0.0",
+      "hashPath": "dhi.mathematics.1.0.0.nupkg.sha512"
+    },
+    "DHI.Mike1D.Generic/23.0.3": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-M+gAhx2IuN8jR2LcqmTvFLVNm8uCrj3Kid7C/4vO6ewWQCeWYyFnVo+FfO11vnA4ni2w2JBk93pai1cMRXop8A==",
+      "path": "dhi.mike1d.generic/23.0.3",
+      "hashPath": "dhi.mike1d.generic.23.0.3.nupkg.sha512"
+    },
+    "DHI.Mike1D.ResultDataAccess/23.0.3": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-JIS6ae/A6zdqCU+ndMog0FLCGeq1WJoIW/xRE1AsK1P5Pa3EUUN0MEkh3sCyXus9jS5GKI7aP76kAkdRROa2Ug==",
+      "path": "dhi.mike1d.resultdataaccess/23.0.3",
+      "hashPath": "dhi.mike1d.resultdataaccess.23.0.3.nupkg.sha512"
+    },
+    "DHI.MikeCore/23.0.3": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-xbhrrpWDVzD3/khYdJV2ilMKMqEDvuWIFflioZGcBf/j8xf3vX/DffvxMcGWxOY9YdBruEKZqWjOas4k/WEpBA==",
+      "path": "dhi.mikecore/23.0.3",
+      "hashPath": "dhi.mikecore.23.0.3.nupkg.sha512"
+    },
+    "DHI.PFS/23.0.3": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-bfbl7WsoBRdhIFjpfxFWkpBncvLzFuyvxnXfmLEipYU/aBcMpkvq01NnGlEAewtYLKBYtSKKFMeDemRITN4dqA==",
+      "path": "dhi.pfs/23.0.3",
+      "hashPath": "dhi.pfs.23.0.3.nupkg.sha512"
+    },
+    "DHI.Projections/23.0.3": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-RQ5vK2efKIxx2WdrJTUTkHZvO8ntL4xzyS7yoeESR5IX+WKpbG/IrX4XTsm9BqbWV81DM7G8ChReORWbycT9fA==",
+      "path": "dhi.projections/23.0.3",
+      "hashPath": "dhi.projections.23.0.3.nupkg.sha512"
+    },
+    "Microsoft.Web.WebView2/1.0.3595.46": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-j+yzqAKwC8Zn+3FL5XJxm6N0Rh5iDqTANBfFaYvnjyRpbpqt3qkpFcqMWLjqEBGiWEClh3zLCkJINwRUcr1KxQ==",
+      "path": "microsoft.web.webview2/1.0.3595.46",
+      "hashPath": "microsoft.web.webview2.1.0.3595.46.nupkg.sha512"
+    },
+    "NetTopologySuite/2.0.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-3ajBClEI9wx2/DjjGmV52sHW1m52vLg8sdz1pJbTf5ySj1X90qehQs3v1DRwGo0F8UKj/Z2SjNhRN/6LroAkqg==",
+      "path": "nettopologysuite/2.0.0",
+      "hashPath": "nettopologysuite.2.0.0.nupkg.sha512"
+    },
+    "NetTopologySuite.Features/2.0.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-RDbEpujDL0bsAyTMHlbKj36KIPhUrtSGUaO/jUjMnsLcixrJFwoDJ8p717FdgMHpQDrcEJAKF+QsAlYsSULkew==",
+      "path": "nettopologysuite.features/2.0.0",
+      "hashPath": "nettopologysuite.features.2.0.0.nupkg.sha512"
+    },
+    "NetTopologySuite.IO.ShapeFile/2.1.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-syaBMB56Rm1hmEK5vTpr5t/UjS2PA5bsVKaeWYY0ib6dlVonCgxfahxrZchnFlwZvuXnNKy/OP15Tr7UD/BM7Q==",
+      "path": "nettopologysuite.io.shapefile/2.1.0",
+      "hashPath": "nettopologysuite.io.shapefile.2.1.0.nupkg.sha512"
+    },
+    "pythonnet/3.0.5": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-20UVeB1uDpvCHZi8yNv7VCSUKVRRaxPZWFYhkO+BjfBB9GgOh2vEeucy3U7zTY8xEVCHf2XHpRNfAU/3quxXZw==",
+      "path": "pythonnet/3.0.5",
+      "hashPath": "pythonnet.3.0.5.nupkg.sha512"
+    }
+  }
+}

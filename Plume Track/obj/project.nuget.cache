@@ -1,0 +1,28 @@
+{
+  "version": 2,
+  "dgSpecHash": "0ss0J+/IqVs=",
+  "success": true,
+  "projectFilePath": "C:\\Users\\abja\\OneDrive - DHI\\61803553-05 EMMP Support Group\\PlumeTrack\\Plume Track\\Plume Track.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\abja\\.nuget\\packages\\antlr4.runtime.standard\\4.7.2\\antlr4.runtime.standard.4.7.2.nupkg.sha512",
+    "C:\\Users\\abja\\.nuget\\packages\\dhi.corlib\\1.0.1\\dhi.corlib.1.0.1.nupkg.sha512",
+    "C:\\Users\\abja\\.nuget\\packages\\dhi.dfs\\23.0.3\\dhi.dfs.23.0.3.nupkg.sha512",
+    "C:\\Users\\abja\\.nuget\\packages\\dhi.dhifl\\23.0.3\\dhi.dhifl.23.0.3.nupkg.sha512",
+    "C:\\Users\\abja\\.nuget\\packages\\dhi.eum\\23.0.3\\dhi.eum.23.0.3.nupkg.sha512",
+    "C:\\Users\\abja\\.nuget\\packages\\dhi.math.expression\\23.0.3\\dhi.math.expression.23.0.3.nupkg.sha512",
+    "C:\\Users\\abja\\.nuget\\packages\\dhi.mathematics\\1.0.0\\dhi.mathematics.1.0.0.nupkg.sha512",
+    "C:\\Users\\abja\\.nuget\\packages\\dhi.mike1d.generic\\23.0.3\\dhi.mike1d.generic.23.0.3.nupkg.sha512",
+    "C:\\Users\\abja\\.nuget\\packages\\dhi.mike1d.resultdataaccess\\23.0.3\\dhi.mike1d.resultdataaccess.23.0.3.nupkg.sha512",
+    "C:\\Users\\abja\\.nuget\\packages\\dhi.mikecore\\23.0.3\\dhi.mikecore.23.0.3.nupkg.sha512",
+    "C:\\Users\\abja\\.nuget\\packages\\dhi.pfs\\23.0.3\\dhi.pfs.23.0.3.nupkg.sha512",
+    "C:\\Users\\abja\\.nuget\\packages\\dhi.projections\\23.0.3\\dhi.projections.23.0.3.nupkg.sha512",
+    "C:\\Users\\abja\\.nuget\\packages\\microsoft.netcore.platforms\\1.1.0\\microsoft.netcore.platforms.1.1.0.nupkg.sha512",
+    "C:\\Users\\abja\\.nuget\\packages\\microsoft.web.webview2\\1.0.3595.46\\microsoft.web.webview2.1.0.3595.46.nupkg.sha512",
+    "C:\\Users\\abja\\.nuget\\packages\\netstandard.library\\1.6.1\\netstandard.library.1.6.1.nupkg.sha512",
+    "C:\\Users\\abja\\.nuget\\packages\\nettopologysuite\\2.0.0\\nettopologysuite.2.0.0.nupkg.sha512",
+    "C:\\Users\\abja\\.nuget\\packages\\nettopologysuite.features\\2.0.0\\nettopologysuite.features.2.0.0.nupkg.sha512",
+    "C:\\Users\\abja\\.nuget\\packages\\nettopologysuite.io.shapefile\\2.1.0\\nettopologysuite.io.shapefile.2.1.0.nupkg.sha512",
+    "C:\\Users\\abja\\.nuget\\packages\\pythonnet\\3.0.5\\pythonnet.3.0.5.nupkg.sha512"
+  ],
+  "logs": []
+}
