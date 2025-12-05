@@ -1,0 +1,64 @@
+site_name: Plume Track Manual
+# This setting should be present and enabled:
+use_directory_urls: True
+theme:
+  name: material
+  logo: assets/Logo.png
+  favicon: assets/Logo.ico
+  features:
+    - navigation.tabs        # Creates top-level tabs for User vs Tech docs
+    - navigation.sections    # Expands sections in sidebar
+    - navigation.expand      # Open sidebar by default
+  palette:
+    # Scheme 1: Dark Mode
+    - scheme: slate      # Enables dark mode
+      primary: custom     # Primary color (Header, links)
+      accent: deep orange  # Accent color (Hover, highlights)
+      toggle:
+        icon: material/brightness-4   # Icon for the toggle switch (Sun icon)
+        name: Switch to light mode
+
+    # Scheme 2: Light Mode (Default, but you can customize it)
+    - scheme: default    # Enables light mode
+      primary: custom     # Primary color
+      accent: deep orange  # Accent color
+      toggle:
+        icon: material/brightness-7   # Icon for the toggle switch (Moon icon)
+        name: Switch to dark mode
+extra_css:
+  - stylesheets/extra.css
+# 1. Navigation Structure
+nav:
+  - Home: index.md
+  - User Guide:
+      - Installation: user_guide/0_installation.md
+      - Project Setup: user_guide/1_project_setup.md
+      - Workflows: user_guide/2_workflows.md
+  - Technical Documentation:
+      - Architecture: technical_docs/architecture.md
+      - Math & Logic: technical_docs/math_logic.md
+      - API Reference: technical_docs/api_reference.md
+
+# 2. Markdown Extensions (Enables Math)
+markdown_extensions:
+  - admonition               # For "Note" and "Warning" boxes
+  - pymdownx.details         # For collapsible sections
+  - pymdownx.superfences     # Better code blocks
+  - pymdownx.arithmatex:     # MATH SUPPORT
+      generic: true
+
+# 3. Math Configuration (JavaScript for rendering)
+extra_javascript:
+  - javascripts/mathjax.js
+  - https://polyfill.io/v3/polyfill.min.js?features=es6
+  - https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js
+
+# 4. Plugins (Enables PDF)
+plugins:
+  - search
+  - caption
+  # - with-pdf:
+  #     cover: true
+  #     cover_title: "MySoftware Official Manual"
+      # author: Abbas Jazaeri
+

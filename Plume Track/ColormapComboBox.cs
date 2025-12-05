@@ -9,7 +9,7 @@ namespace Plume_Track
 {
     public class ColormapComboBox : ComboBox
     {
-        public string CMapsPath { get; private set; }
+        public string CMapsPath { get; private set; } = string.Empty;
         [DefaultValue(100)]
         public int TextColumnWidth { get; set; } = 100;
         [Browsable(false)]
@@ -19,6 +19,13 @@ namespace Plume_Track
             get => (SelectedItem as ColormapItem)?.Name;
             set => SelectColormapByName(value);
         }
+
+        public ColormapComboBox()
+        {
+            InitializeControl();
+            // Do NOT call RefreshFromPath here; designer doesn’t know the path yet.
+        }
+
         public ColormapComboBox(string cmapsPath, string name)
         {
             CMapsPath = cmapsPath;
@@ -30,6 +37,16 @@ namespace Plume_Track
             Name = name;
             DrawItem += OnDrawItem;
             RefreshFromPath();
+        }
+
+        private void InitializeControl()
+        {
+            Dock = DockStyle.Fill;
+            DropDownStyle = ComboBoxStyle.DropDownList;
+            FormattingEnabled = true;
+            DrawMode = DrawMode.OwnerDrawFixed;
+            ItemHeight = 24;
+            DrawItem += OnDrawItem;
         }
 
         public void SetPath(string cmapsPath)

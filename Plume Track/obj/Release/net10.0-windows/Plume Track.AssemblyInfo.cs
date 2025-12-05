@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("Plume Track")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Release")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+2a0ef5e8008ced8ea822b56912e1c5756e1cda4b")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+dccdba551f32dadc4b5f5078adeaa2bd17176497")]
 [assembly: System.Reflection.AssemblyProductAttribute("Plume Track")]
 [assembly: System.Reflection.AssemblyTitleAttribute("Plume Track")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

@@ -30,131 +30,131 @@ namespace Plume_Track
         public XmlElement? adcp;
         public _ClassConfigurationManager _project = new();
 
-        private GroupBox grpRequired = _Utils.CreateGroupBox("grpRequired", "Required Inputs");
-        private GroupBox grpMT = _Utils.CreateGroupBox("grpMT", "MT Inputs");
-        private GroupBox grpHD = _Utils.CreateGroupBox("grpHD", "HD Inputs");
-        private GroupBox grpADCP = _Utils.CreateGroupBox("grpADCP", "ADCP Inputs");
-        private GroupBox grpLayout = _Utils.CreateGroupBox("grpLayout", "Layout");
-        private GroupBox grpAnimation = _Utils.CreateGroupBox("grpAnimation", "Animation");
+        private readonly GroupBox grpRequired = _Utils.CreateGroupBox("grpRequired", "Required Inputs");
+        private readonly GroupBox grpMT = _Utils.CreateGroupBox("grpMT", "MT Inputs");
+        private readonly GroupBox grpHD = _Utils.CreateGroupBox("grpHD", "HD Inputs");
+        private readonly GroupBox grpADCP = _Utils.CreateGroupBox("grpADCP", "ADCP Inputs");
+        private readonly GroupBox grpLayout = _Utils.CreateGroupBox("grpLayout", "Layout");
+        private readonly GroupBox grpAnimation = _Utils.CreateGroupBox("grpAnimation", "Animation");
 
-        private TableLayoutPanel tableRequired = _Utils.CreateTable("tableRequired", 3, [50F, 40F, 10F]);
-        private TableLayoutPanel tableMT = _Utils.CreateTable("tableMT", 3, [50F, 40F, 10F]);
-        private TableLayoutPanel tableHD = _Utils.CreateTable("tableHD", 3, [50F, 40F, 10F]);
-        private TableLayoutPanel tableADCP = _Utils.CreateTable("tableADCP", 3, [50F, 40F, 10F]);
-        private TableLayoutPanel tableLayout = _Utils.CreateTable("tableLayout", 3, [50F, 40F, 10F]);
-        private TableLayoutPanel tableAnimation = _Utils.CreateTable("tableAnimation", 3, [50F, 40F, 10F]);
+        private readonly TableLayoutPanel tableRequired = _Utils.CreateTable("tableRequired", 3, [50F, 40F, 10F]);
+        private readonly TableLayoutPanel tableMT = _Utils.CreateTable("tableMT", 3, [50F, 40F, 10F]);
+        private readonly TableLayoutPanel tableHD = _Utils.CreateTable("tableHD", 3, [50F, 40F, 10F]);
+        private readonly TableLayoutPanel tableADCP = _Utils.CreateTable("tableADCP", 3, [50F, 40F, 10F]);
+        private readonly TableLayoutPanel tableLayout = _Utils.CreateTable("tableLayout", 3, [50F, 40F, 10F]);
+        private readonly TableLayoutPanel tableAnimation = _Utils.CreateTable("tableAnimation", 3, [50F, 40F, 10F]);
 
         // Required Inputs
-        private Label lblHDModel = _Utils.CreateLabel("lblHDModel", "HD Model");
-        private ComboBox comboHDModel = _Utils.CreateComboBox("comboHDModel", [], -1);
-        private Label lblMTModel = _Utils.CreateLabel("lblMTModel", "MT Model");
-        private ComboBox comboMTModel = _Utils.CreateComboBox("comboMTModel", [], -1);
-        private Label lblADCP = _Utils.CreateLabel("lblADCP", "ADCP");
-        private ComboBox comboADCP = _Utils.CreateComboBox("comboADCP", [], -1);
+        private readonly Label lblHDModel = _Utils.CreateLabel("lblHDModel", "HD Model");
+        private readonly ComboBox comboHDModel = _Utils.CreateComboBox("comboHDModel", [], -1);
+        private readonly Label lblMTModel = _Utils.CreateLabel("lblMTModel", "MT Model");
+        private readonly ComboBox comboMTModel = _Utils.CreateComboBox("comboMTModel", [], -1);
+        private readonly Label lblADCP = _Utils.CreateLabel("lblADCP", "ADCP");
+        private readonly ComboBox comboADCP = _Utils.CreateComboBox("comboADCP", [], -1);
         // MT Inputs
-        private Label lblSSCScale = _Utils.CreateLabel("lblSSCScale", "SSC Scale");
-        private ComboBox comboSSCScale = _Utils.CreateComboBox("comboSSCScale", ["Normal", "Logarithmic"]);
-        private Label lblSSCLevels = _Utils.CreateLabel("lblSSCLevels", "SSC Levels");
-        private TextBox txtSSCLevels = _Utils.CreateTextBox("txtSSCLevels", "0.01,0.1,1.0,10.0");
-        private Label lblSSCvmin = _Utils.CreateLabel("lblSSCvmin", "vmin");
-        private TextBox txtSSCvmin = _Utils.CreateTextBox("txtSSCvmin", "");
-        private Label lblSSCvmax = _Utils.CreateLabel("lblSSCvmax", "vmax");
-        private TextBox txtSSCvmax = _Utils.CreateTextBox("txtSSCvmax", "");
-        private Label lblSSCCmap = _Utils.CreateLabel("lblSSCCmap", "SSC Colormap");
-        private ColormapComboBox comboSSCcmap = new(_Globals.CMapsPath, "combocmap")
+        private readonly Label lblSSCScale = _Utils.CreateLabel("lblSSCScale", "SSC Scale");
+        private readonly ComboBox comboSSCScale = _Utils.CreateComboBox("comboSSCScale", ["Normal", "Logarithmic"]);
+        private readonly Label lblSSCLevels = _Utils.CreateLabel("lblSSCLevels", "SSC Levels");
+        private readonly TextBox txtSSCLevels = _Utils.CreateTextBox("txtSSCLevels", "0.01,0.1,1.0,10.0");
+        private readonly Label lblSSCvmin = _Utils.CreateLabel("lblSSCvmin", "vmin");
+        private readonly TextBox txtSSCvmin = _Utils.CreateTextBox("txtSSCvmin", "");
+        private readonly Label lblSSCvmax = _Utils.CreateLabel("lblSSCvmax", "vmax");
+        private readonly TextBox txtSSCvmax = _Utils.CreateTextBox("txtSSCvmax", "");
+        private readonly Label lblSSCCmap = _Utils.CreateLabel("lblSSCCmap", "SSC Colormap");
+        private readonly ColormapComboBox comboSSCcmap = new(_Globals.CMapsPath, "combocmap")
         {
             SelectedColormapName = "turbo"
         };
-        private Label lblSSCBottomThreshold = _Utils.CreateLabel("lblSSCBottomThreshold", "SSC Bottom Threshold");
-        private TextBox txtSSCBottomThreshold = _Utils.CreateTextBox("txtSSCBottomThreshold", "");
-        private Label lblSSCPixelSizeM = _Utils.CreateLabel("lblSSCPixelSizeM", "SSC Pixel Size (m)");
-        private TextBox txtSSCPixelSizeM = _Utils.CreateTextBox("txtSSCPixelSizeM", "10");
+        private readonly Label lblSSCBottomThreshold = _Utils.CreateLabel("lblSSCBottomThreshold", "SSC Bottom Threshold");
+        private readonly TextBox txtSSCBottomThreshold = _Utils.CreateTextBox("txtSSCBottomThreshold", "");
+        private readonly Label lblSSCPixelSizeM = _Utils.CreateLabel("lblSSCPixelSizeM", "SSC Pixel Size (m)");
+        private readonly TextBox txtSSCPixelSizeM = _Utils.CreateTextBox("txtSSCPixelSizeM", "10");
         // HD Inputs
-        private Label lblModelFieldPixelSizeM = _Utils.CreateLabel("lblModelFieldPixelSizeM", "Model Field Pixel Size (m)");
-        private TextBox txtModelFieldPixelSizeM = _Utils.CreateTextBox("txtModelFieldPixelSizeM", "100");
-        private Label lblModelFieldQuiverStrideN = _Utils.CreateLabel("lblModelFieldQuiverStrideN", "Model Field Quiver Stride N");
-        private NumericUpDown numModelFieldQuiverStrideN = _Utils.CreateNumericUpDown("numModelFieldQuiverStrideN", 1, 20, 3);
-        private Label lblModelQuiverMode = _Utils.CreateLabel("lblModelQuiverMode", "Model Quiver Mode");
-        private ComboBox comboModelQuiverMode = _Utils.CreateComboBox("comboModelQuiverMode", ["Field", "Transect"]);
-        private Label lblModelQuiverScale = _Utils.CreateLabel("lblModelQuiverScale", "Model Quiver Scale");
-        private TextBox txtModelQuiverScale = _Utils.CreateTextBox("txtModelQuiverScale", "3");
-        private Label lblModelQuiverWidth = _Utils.CreateLabel("lblModelQuiverWidth", "Model Quiver Width");
-        private TextBox txtModelQuiverWidth = _Utils.CreateTextBox("txtModelQuiverWidth", "0.002");
-        private Label lblModelQuiverHeadWidth = _Utils.CreateLabel("lblModelQuiverHeadWidth", "Model Quiver Head Width");
-        private TextBox txtModelQuiverHeadWidth = _Utils.CreateTextBox("txtModelQuiverHeadWidth", "2");
-        private Label lblModelQuiverHeadLength = _Utils.CreateLabel("lblModelQuiverHeadLength", "Model Quiver Head Length");
-        private TextBox txtModelQuiverHeadLength = _Utils.CreateTextBox("txtModelQuiverHeadLength", "2.5");
-        private Label lblModelQuiverColor = _Utils.CreateLabel("lblModelQuiverColor", "Model Quiver Color");
-        private Panel pnlModelQuiverColor = _Utils.CreatePanel("pnlModelQuiverColor", Color.Blue);
-        private Button btnModelQuiverColor = _Utils.CreateButton("btnModelQuiverColor", "...");
-        private Label lblModelLevels = _Utils.CreateLabel("lblModelLevels", "Model Velocity Levels");
-        private TextBox txtModelLevels = _Utils.CreateTextBox("txtModelLevels", "0.0,0.1,0.2,0.3,0.4,0.5");
-        private Label lblModelvmin = _Utils.CreateLabel("lblModelvmin", "vmin");
-        private TextBox txtModelvmin = _Utils.CreateTextBox("txtModelvmin", "");
-        private Label lblModelvmax = _Utils.CreateLabel("lblModelvmax", "vmax");
-        private TextBox txtModelvmax = _Utils.CreateTextBox("txtModelvmax", "");
-        private Label lblModelCmap = _Utils.CreateLabel("lblModelCmap", "Model Colormap");
-        private ColormapComboBox comboModelCmap = new(_Globals.CMapsPath, "combocmap")
+        private readonly Label lblModelFieldPixelSizeM = _Utils.CreateLabel("lblModelFieldPixelSizeM", "Model Field Pixel Size (m)");
+        private readonly TextBox txtModelFieldPixelSizeM = _Utils.CreateTextBox("txtModelFieldPixelSizeM", "100");
+        private readonly Label lblModelFieldQuiverStrideN = _Utils.CreateLabel("lblModelFieldQuiverStrideN", "Model Field Quiver Stride N");
+        private readonly NumericUpDown numModelFieldQuiverStrideN = _Utils.CreateNumericUpDown("numModelFieldQuiverStrideN", 1, 20, 3);
+        private readonly Label lblModelQuiverMode = _Utils.CreateLabel("lblModelQuiverMode", "Model Quiver Mode");
+        private readonly ComboBox comboModelQuiverMode = _Utils.CreateComboBox("comboModelQuiverMode", ["Field", "Transect"]);
+        private readonly Label lblModelQuiverScale = _Utils.CreateLabel("lblModelQuiverScale", "Model Quiver Scale");
+        private readonly TextBox txtModelQuiverScale = _Utils.CreateTextBox("txtModelQuiverScale", "3");
+        private readonly Label lblModelQuiverWidth = _Utils.CreateLabel("lblModelQuiverWidth", "Model Quiver Width");
+        private readonly TextBox txtModelQuiverWidth = _Utils.CreateTextBox("txtModelQuiverWidth", "0.002");
+        private readonly Label lblModelQuiverHeadWidth = _Utils.CreateLabel("lblModelQuiverHeadWidth", "Model Quiver Head Width");
+        private readonly TextBox txtModelQuiverHeadWidth = _Utils.CreateTextBox("txtModelQuiverHeadWidth", "2");
+        private readonly Label lblModelQuiverHeadLength = _Utils.CreateLabel("lblModelQuiverHeadLength", "Model Quiver Head Length");
+        private readonly TextBox txtModelQuiverHeadLength = _Utils.CreateTextBox("txtModelQuiverHeadLength", "2.5");
+        private readonly Label lblModelQuiverColor = _Utils.CreateLabel("lblModelQuiverColor", "Model Quiver Color");
+        private readonly Panel pnlModelQuiverColor = _Utils.CreatePanel("pnlModelQuiverColor", Color.Blue);
+        private readonly Button btnModelQuiverColor = _Utils.CreateButton("btnModelQuiverColor", "...");
+        private readonly Label lblModelLevels = _Utils.CreateLabel("lblModelLevels", "Model Velocity Levels");
+        private readonly TextBox txtModelLevels = _Utils.CreateTextBox("txtModelLevels", "0.0,0.1,0.2,0.3,0.4,0.5");
+        private readonly Label lblModelvmin = _Utils.CreateLabel("lblModelvmin", "vmin");
+        private readonly TextBox txtModelvmin = _Utils.CreateTextBox("txtModelvmin", "");
+        private readonly Label lblModelvmax = _Utils.CreateLabel("lblModelvmax", "vmax");
+        private readonly TextBox txtModelvmax = _Utils.CreateTextBox("txtModelvmax", "");
+        private readonly Label lblModelCmap = _Utils.CreateLabel("lblModelCmap", "Model Colormap");
+        private readonly ColormapComboBox comboModelCmap = new(_Globals.CMapsPath, "combocmap")
         {
             SelectedColormapName = "turbo"
         };
-        private Label lblModelCmapBottomThreshold = _Utils.CreateLabel("lblModelCmapBottomThreshold", "Model Colormap Bottom Threshold");
-        private TextBox txtModelCmapBottomThreshold = _Utils.CreateTextBox("txtModelCmapBottomThreshold", "");
+        private readonly Label lblModelCmapBottomThreshold = _Utils.CreateLabel("lblModelCmapBottomThreshold", "Model Colormap Bottom Threshold");
+        private readonly TextBox txtModelCmapBottomThreshold = _Utils.CreateTextBox("txtModelCmapBottomThreshold", "");
         // ADCP
-        private Label lblADCPSeriesMode = _Utils.CreateLabel("lblADCPSeriesMode", "ADCP Series Mode");
-        private ComboBox comboADCPSeriesMode = _Utils.CreateComboBox("comboADCPSeriesMode", ["Bin", "Depth"]);
-        private Label lblADCPSeriesTarget = _Utils.CreateLabel("lblADCPSeriesTarget", "ADCP Series Target");
-        private NumericUpDown numADCPSeriesTarget = _Utils.CreateNumericUpDown("numADCPSeriesTarget", 1, 100, 10);
-        private TextBox txtADCPSeriesTarget = _Utils.CreateTextBox("txtADCPSeriesTarget", "10");
-        private CheckBox checkADCPSeriesTarget = _Utils.CreateCheckBox("checkADCPSeriesTarget", "Mean", false);
-        private Label lblADCPQuiverScale = _Utils.CreateLabel("lblADCPQuiverScale", "ADCP Quiver Scale");
-        private TextBox txtADCPQuiverScale = _Utils.CreateTextBox("txtADCPQuiverScale", "3");
-        private Label lblADCPQuiverWidth = _Utils.CreateLabel("lblADCPQuiverWidth", "ADCP Quiver Width");
-        private TextBox txtADCPQuiverWidth = _Utils.CreateTextBox("txtADCPQuiverWidth", "0.002");
-        private Label lblADCPQuiverHeadWidth = _Utils.CreateLabel("lblADCPQuiverHeadWidth", "ADCP Quiver Head Width");
-        private TextBox txtADCPQuiverHeadWidth = _Utils.CreateTextBox("txtADCPQuiverHeadWidth", "2");
-        private Label lblADCPQuiverHeadLength = _Utils.CreateLabel("lblADCPQuiverHeadLength", "ADCP Quiver Head Length");
-        private TextBox txtADCPQuiverHeadLength = _Utils.CreateTextBox("txtADCPQuiverHeadLength", "2.5");
-        private Label lblADCPQuiverColor = _Utils.CreateLabel("lblADCPQuiverColor", "ADCP Quiver Color");
-        private Panel pnlADCPQuiverColor = _Utils.CreatePanel("pnlADCPQuiverColor", Color.Red);
-        private Button btnADCPQuiverColor = _Utils.CreateButton("btnADCPQuiverColor", "...");
-        private Label lblADCPTransectColor = _Utils.CreateLabel("lblADCPTransectColor", "ADCP Transect Color");
-        private Panel pnlADCPTransectColor = _Utils.CreatePanel("pnlADCPTransectColor", Color.Green);
-        private Button btnADCPTransectColor = _Utils.CreateButton("btnADCPTransectColor", "...");
-        private Label lblADCPQuiverEveryN = _Utils.CreateLabel("lblADCPQuiverEveryN", "ADCP Quiver Every N");
-        private NumericUpDown numADCPQuiverEveryN = _Utils.CreateNumericUpDown("numADCPQuiverEveryN", 1, 20, 1);
-        private Label lblADCPTransectWidth = _Utils.CreateLabel("lblADCPTransectWidth", "ADCP Transect Line Width");
-        private TextBox txtADCPTransectWidth = _Utils.CreateTextBox("txtADCPTransectWidth", "2");
+        private readonly Label lblADCPSeriesMode = _Utils.CreateLabel("lblADCPSeriesMode", "ADCP Series Mode");
+        private readonly ComboBox comboADCPSeriesMode = _Utils.CreateComboBox("comboADCPSeriesMode", ["Bin", "Depth"]);
+        private readonly Label lblADCPSeriesTarget = _Utils.CreateLabel("lblADCPSeriesTarget", "ADCP Series Target");
+        private readonly NumericUpDown numADCPSeriesTarget = _Utils.CreateNumericUpDown("numADCPSeriesTarget", 1, 100, 10);
+        private readonly TextBox txtADCPSeriesTarget = _Utils.CreateTextBox("txtADCPSeriesTarget", "10");
+        private readonly CheckBox checkADCPSeriesTarget = _Utils.CreateCheckBox("checkADCPSeriesTarget", "Mean", false);
+        private readonly Label lblADCPQuiverScale = _Utils.CreateLabel("lblADCPQuiverScale", "ADCP Quiver Scale");
+        private readonly TextBox txtADCPQuiverScale = _Utils.CreateTextBox("txtADCPQuiverScale", "3");
+        private readonly Label lblADCPQuiverWidth = _Utils.CreateLabel("lblADCPQuiverWidth", "ADCP Quiver Width");
+        private readonly TextBox txtADCPQuiverWidth = _Utils.CreateTextBox("txtADCPQuiverWidth", "0.002");
+        private readonly Label lblADCPQuiverHeadWidth = _Utils.CreateLabel("lblADCPQuiverHeadWidth", "ADCP Quiver Head Width");
+        private readonly TextBox txtADCPQuiverHeadWidth = _Utils.CreateTextBox("txtADCPQuiverHeadWidth", "2");
+        private readonly Label lblADCPQuiverHeadLength = _Utils.CreateLabel("lblADCPQuiverHeadLength", "ADCP Quiver Head Length");
+        private readonly TextBox txtADCPQuiverHeadLength = _Utils.CreateTextBox("txtADCPQuiverHeadLength", "2.5");
+        private readonly Label lblADCPQuiverColor = _Utils.CreateLabel("lblADCPQuiverColor", "ADCP Quiver Color");
+        private readonly Panel pnlADCPQuiverColor = _Utils.CreatePanel("pnlADCPQuiverColor", Color.Red);
+        private readonly Button btnADCPQuiverColor = _Utils.CreateButton("btnADCPQuiverColor", "...");
+        private readonly Label lblADCPTransectColor = _Utils.CreateLabel("lblADCPTransectColor", "ADCP Transect Color");
+        private readonly Panel pnlADCPTransectColor = _Utils.CreatePanel("pnlADCPTransectColor", Color.Green);
+        private readonly Button btnADCPTransectColor = _Utils.CreateButton("btnADCPTransectColor", "...");
+        private readonly Label lblADCPQuiverEveryN = _Utils.CreateLabel("lblADCPQuiverEveryN", "ADCP Quiver Every N");
+        private readonly NumericUpDown numADCPQuiverEveryN = _Utils.CreateNumericUpDown("numADCPQuiverEveryN", 1, 20, 1);
+        private readonly Label lblADCPTransectWidth = _Utils.CreateLabel("lblADCPTransectWidth", "ADCP Transect Line Width");
+        private readonly TextBox txtADCPTransectWidth = _Utils.CreateTextBox("txtADCPTransectWidth", "2");
         // Layout
-        private Label lblLayoutCbarTickDecimals = _Utils.CreateLabel("lblLayoutCbarTickDecimals", "Color Bar Tick Decimals");
-        private NumericUpDown numLayoutCbarTickDecimals = _Utils.CreateNumericUpDown("numLayoutCbarTickDecimals", 0, 5, 2);
-        private Label lblLayoutAxisTickDecimals = _Utils.CreateLabel("lblLayoutAxisTickDecimals", "Axis Tick Decimals");
-        private NumericUpDown numLayoutAxisTickDecimals = _Utils.CreateNumericUpDown("numLayoutAxisTickDecimals", 0, 5, 2);
-        private Label lblLayoutPadM = _Utils.CreateLabel("lblLayoutPadM", "Padding (m)");
-        private TextBox txtLayoutPadM = _Utils.CreateTextBox("txtLayoutPadM", "2000");
-        private Label lblLayoutDistanceBinM = _Utils.CreateLabel("lblLayoutDistanceBinM", "Distance Bin (m)");
-        private TextBox txtLayoutDistanceBinM = _Utils.CreateTextBox("txtLayoutDistanceBinM", "50");
-        private Label lblLayoutBarWidthScale = _Utils.CreateLabel("lblLayoutBarWidthScale", "Bar Chart Width Scale");
-        private TextBox txtLayoutBarWidthScale = _Utils.CreateTextBox("txtLayoutBarWidthScale", "0.15");
+        private readonly Label lblLayoutCbarTickDecimals = _Utils.CreateLabel("lblLayoutCbarTickDecimals", "Color Bar Tick Decimals");
+        private readonly NumericUpDown numLayoutCbarTickDecimals = _Utils.CreateNumericUpDown("numLayoutCbarTickDecimals", 0, 5, 2);
+        private readonly Label lblLayoutAxisTickDecimals = _Utils.CreateLabel("lblLayoutAxisTickDecimals", "Axis Tick Decimals");
+        private readonly NumericUpDown numLayoutAxisTickDecimals = _Utils.CreateNumericUpDown("numLayoutAxisTickDecimals", 0, 5, 2);
+        private readonly Label lblLayoutPadM = _Utils.CreateLabel("lblLayoutPadM", "Padding (m)");
+        private readonly TextBox txtLayoutPadM = _Utils.CreateTextBox("txtLayoutPadM", "2000");
+        private readonly Label lblLayoutDistanceBinM = _Utils.CreateLabel("lblLayoutDistanceBinM", "Distance Bin (m)");
+        private readonly TextBox txtLayoutDistanceBinM = _Utils.CreateTextBox("txtLayoutDistanceBinM", "50");
+        private readonly Label lblLayoutBarWidthScale = _Utils.CreateLabel("lblLayoutBarWidthScale", "Bar Chart Width Scale");
+        private readonly TextBox txtLayoutBarWidthScale = _Utils.CreateTextBox("txtLayoutBarWidthScale", "0.15");
         // Animation
-        private Label lblAnimationStartIndex = _Utils.CreateLabel("lblAnimationStartIndex", "First Timestep");
-        private NumericUpDown numAnimationStartIndex = _Utils.CreateNumericUpDown("numAnimationStartIndex", 0, 10000, 0);
-        private CheckBox checkAnimationUseStart = _Utils.CreateCheckBox("checkAnimationUseStart", "Use First Timestep", true);
-        private Label lblAnimationEndIndex = _Utils.CreateLabel("lblAnimationEndIndex", "Last Timestep");
-        private NumericUpDown numAnimationEndIndex = _Utils.CreateNumericUpDown("numAnimationEndIndex", 0, 10000, 10);
-        private CheckBox checkAnimationUseEnd = _Utils.CreateCheckBox("checkAnimationUseEnd", "Use Last Timestep", true);
-        private Label lblAnimationTimeStep = _Utils.CreateLabel("lblAnimationTimeStep", "Time Step");
-        private NumericUpDown numAnimationTimeStep = _Utils.CreateNumericUpDown("numAnimationTimeStep", 1, 1000, 1);
-        private Label lblAnimationInterval = _Utils.CreateLabel("lblAnimationInterval", "Interval (ms)");
-        private NumericUpDown numAnimationInterval = _Utils.CreateNumericUpDown("numAnimationInterval", 100, 10000, 500);
-        private Label lblAnimationBBox = _Utils.CreateLabel("lblAnimationBBox", "Bounding Box");
-        private TextBox txtAnimationBBox = _Utils.CreateTextBox("txtAnimationBBox", "");
-        private Button btnAnimationBBox = _Utils.CreateButton("btnAnimationBBox", "...");
-        private Label lblAnimationOutputFile = _Utils.CreateLabel("lblAnimationOutputFile", "Output File");
-        private TextBox txtAnimationOutputFile = _Utils.CreateTextBox("txtAnimationOutputFile", "");
-        private Button btnAnimationOutputFile = _Utils.CreateButton("btnAnimationOutputFile", "...");
+        private readonly Label lblAnimationStartIndex = _Utils.CreateLabel("lblAnimationStartIndex", "First Timestep");
+        private readonly NumericUpDown numAnimationStartIndex = _Utils.CreateNumericUpDown("numAnimationStartIndex", 0, 10000, 0);
+        private readonly CheckBox checkAnimationUseStart = _Utils.CreateCheckBox("checkAnimationUseStart", "Use First Timestep", true);
+        private readonly Label lblAnimationEndIndex = _Utils.CreateLabel("lblAnimationEndIndex", "Last Timestep");
+        private readonly NumericUpDown numAnimationEndIndex = _Utils.CreateNumericUpDown("numAnimationEndIndex", 0, 10000, 10);
+        private readonly CheckBox checkAnimationUseEnd = _Utils.CreateCheckBox("checkAnimationUseEnd", "Use Last Timestep", true);
+        private readonly Label lblAnimationTimeStep = _Utils.CreateLabel("lblAnimationTimeStep", "Time Step");
+        private readonly NumericUpDown numAnimationTimeStep = _Utils.CreateNumericUpDown("numAnimationTimeStep", 1, 1000, 1);
+        private readonly Label lblAnimationInterval = _Utils.CreateLabel("lblAnimationInterval", "Interval (ms)");
+        private readonly NumericUpDown numAnimationInterval = _Utils.CreateNumericUpDown("numAnimationInterval", 100, 10000, 500);
+        private readonly Label lblAnimationBBox = _Utils.CreateLabel("lblAnimationBBox", "Bounding Box");
+        private readonly TextBox txtAnimationBBox = _Utils.CreateTextBox("txtAnimationBBox", "");
+        private readonly Button btnAnimationBBox = _Utils.CreateButton("btnAnimationBBox", "...");
+        private readonly Label lblAnimationOutputFile = _Utils.CreateLabel("lblAnimationOutputFile", "Output File");
+        private readonly TextBox txtAnimationOutputFile = _Utils.CreateTextBox("txtAnimationOutputFile", "");
+        private readonly Button btnAnimationOutputFile = _Utils.CreateButton("btnAnimationOutputFile", "...");
 
-        private void PopulateComboBox(ComboBox comboBox, string itemName)
+        private static void PopulateComboBox(ComboBox comboBox, string itemName)
         {
             XmlNodeList? items = _ClassConfigurationManager.GetObjects(itemName);
             foreach (XmlNode node in items)
@@ -402,7 +402,7 @@ namespace Plume_Track
                 XmlElement element = (XmlElement)node;
                 string name = element.GetAttribute("name");
                 string id = element.GetAttribute("id");
-                ComboBoxItem? item = new ComboBoxItem(name, id);
+                ComboBoxItem? item = new(name, id);
                 comboHDModel.Items.Add(item);
             }
             if (comboHDModel.Items.Count > 0)
@@ -413,7 +413,7 @@ namespace Plume_Track
                 XmlElement element = (XmlElement)node;
                 string name = element.GetAttribute("name");
                 string id = element.GetAttribute("id");
-                ComboBoxItem? item = new ComboBoxItem(name, id);
+                ComboBoxItem? item = new(name, id);
                 comboMTModel.Items.Add(item);
             }
             if (comboMTModel.Items.Count > 0)
@@ -537,7 +537,7 @@ namespace Plume_Track
             InitializeWidgets();
         }
 
-        private bool ValidInputs(string type)
+        private static bool ValidInputs(string type)
         {
             if (type == "HD")
             {
@@ -561,8 +561,8 @@ namespace Plume_Track
 
         private void btnPlot_Click(object sender, EventArgs e)
         {
-            Dictionary<string, string> inputs = null;
-            if (comboPlotType.SelectedItem.ToString() == "HD Comparison")
+            Dictionary<string, string>? inputs = null;
+            if (comboPlotType.SelectedItem?.ToString() == "HD Comparison")
             {
                 if (ValidInputs(type: "HD"))
                 {
@@ -614,7 +614,7 @@ namespace Plume_Track
                     return;
                 }
             }
-            else if (comboPlotType.SelectedItem.ToString() == "MT Comparison")
+            else if (comboPlotType.SelectedItem?.ToString() == "MT Comparison")
             {
                 if (ValidInputs(type: "MT"))
                 {
@@ -775,19 +775,19 @@ namespace Plume_Track
             comboADCP.Items.Clear();
             comboHDModel.Items.Clear();
             comboMTModel.Items.Clear();
-            if (comboPlotType.SelectedItem.ToString() == "HD Comparison")
+            if (comboPlotType.SelectedItem?.ToString() == "HD Comparison")
             {
                 PropHDModelComparison();
             }
-            else if (comboPlotType.SelectedItem.ToString() == "MT Comparison")
+            else if (comboPlotType.SelectedItem?.ToString() == "MT Comparison")
             {
                 PropMTModelComparison();
             }
-            else if (comboPlotType.SelectedItem.ToString() == "MT and HD Comparison")
+            else if (comboPlotType.SelectedItem?.ToString() == "MT and HD Comparison")
             {
                 PropHDMTModelComparison();
             }
-            else if (comboPlotType.SelectedItem.ToString() == "MT and HD Comparison Animation")
+            else if (comboPlotType.SelectedItem?.ToString() == "MT and HD Comparison Animation")
             {
                 PropHDMTModelAnimation();
             }
@@ -833,50 +833,46 @@ namespace Plume_Track
 
         private void btnAnimationBBox_Click(object? sender, EventArgs e)
         {
-            using (OpenFileDialog ofd = new OpenFileDialog())
+            using OpenFileDialog ofd = new();
+            ofd.Title = "Select Animation Bounding Box Shapefile";
+            ofd.Filter = "Polygon Shapefile (*.shp)|*.shp";
+            ofd.DefaultExt = "shp";
+            if (ofd.ShowDialog() == DialogResult.OK)
             {
-                ofd.Title = "Select Animation Bounding Box Shapefile";
-                ofd.Filter = "Polygon Shapefile (*.shp)|*.shp";
-                ofd.DefaultExt = "shp";
-                if (ofd.ShowDialog() == DialogResult.OK)
-                {
-                    txtAnimationBBox.Text = ofd.FileName;
-                }
+                txtAnimationBBox.Text = ofd.FileName;
             }
         }
 
         private void btnAnimationOutputFile_Click(object? sender, EventArgs e)
         {
-            using (SaveFileDialog sfd = new SaveFileDialog())
+            using SaveFileDialog sfd = new();
+            sfd.Title = "Select Animation Output File";
+            sfd.Filter = "MP4 files (*.mp4)|*.mp4|gif files (*.gif)|*.gif";
+            sfd.DefaultExt = "gif";
+            if (sfd.ShowDialog() == DialogResult.OK)
             {
-                sfd.Title = "Select Animation Output File";
-                sfd.Filter = "MP4 files (*.mp4)|*.mp4|gif files (*.gif)|*.gif";
-                sfd.DefaultExt = "gif";
-                if (sfd.ShowDialog() == DialogResult.OK)
-                {
-                    txtAnimationOutputFile.Text = sfd.FileName;
-                }
+                txtAnimationOutputFile.Text = sfd.FileName;
             }
         }
 
         private void btnAnimatiobBBox_Click(object? sender, EventArgs e)
         {
-            using (OpenFileDialog ofd = new OpenFileDialog())
+            using OpenFileDialog ofd = new();
+            ofd.Title = "Select Animation Bounding Box Shapefile";
+            ofd.Filter = "Polygon Shapefile (*.shp)|*.shp";
+            ofd.DefaultExt = "shp";
+            if (ofd.ShowDialog() == DialogResult.OK)
             {
-                ofd.Title = "Select Animation Bounding Box Shapefile";
-                ofd.Filter = "Polygon Shapefile (*.shp)|*.shp";
-                ofd.DefaultExt = "shp";
-                if (ofd.ShowDialog() == DialogResult.OK)
-                {
-                    txtAnimationBBox.Text = ofd.FileName;
-                }
+                txtAnimationBBox.Text = ofd.FileName;
             }
         }
 
         private void btnChangeColor_Click(object? sender, EventArgs e)
         {
-            Button btn = sender as Button;
-            Panel pnl = null;
+            if (sender == null)
+                return;
+            Button? btn = sender as Button;
+            Panel? pnl = null;
             if (btn.Name == "btnModelQuiverColor")
                 pnl = pnlModelQuiverColor;
             else if (btn.Name == "btnADCPQuiverColor")
@@ -885,14 +881,12 @@ namespace Plume_Track
                 pnl = pnlADCPTransectColor;
             if (pnl == null)
                 return;
-            using (ColorDialog cd = new ColorDialog())
+            using ColorDialog cd = new();
+            cd.Color = pnl.BackColor;
+            cd.FullOpen = true;
+            if (cd.ShowDialog() == DialogResult.OK)
             {
-                cd.Color = pnl.BackColor;
-                cd.FullOpen = true;
-                if (cd.ShowDialog() == DialogResult.OK)
-                {
-                    pnl.BackColor = cd.Color;
-                }
+                pnl.BackColor = cd.Color;
             }
         }
     }

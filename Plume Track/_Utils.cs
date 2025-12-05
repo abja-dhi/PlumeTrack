@@ -69,13 +69,14 @@ namespace Plume_Track
                 TextAlign = ContentAlignment.MiddleLeft
             };
         }
-        public static TextBox CreateTextBox(string name, string text = "")
+        public static TextBox CreateTextBox(string name, string text = "", bool enabled = true)
         {
             return new TextBox
             {
                 Dock = DockStyle.Fill,
                 Name = name,
                 Text = text,
+                Enabled = enabled
             };
         }
         public static ComboBox CreateComboBox(string name, string[] items, int selectedIndex = 0)

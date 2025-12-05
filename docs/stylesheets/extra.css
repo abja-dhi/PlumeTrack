@@ -1,0 +1,16 @@
+:root  > * {
+  --md-primary-fg-color:        #F8F1E6;
+  --md-primary-fg-color--light: #F8F1E6;
+  --md-primary-fg-color--dark:  #F8F1E6;
+  --md-primary-bg-color:        #2E4057;
+  --md-primary-bg-color--light: #2E4057;
+  --md-primary-bg-color--dark:  #2E4057;
+  --md-accent-fg-color:           #2E4057;
+  --md-accent-bg-color--light:    #2E4057;
+  --md-accent-fg-color--dark:     #2E4057;
+  --md-typeset-kbd-color: #0056B3;
+  --md-typeset-kbd-color--light: #0056B3;
+  --md-typeset-kbd-color--dark: #0056B3;
+  
+}
+

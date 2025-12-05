@@ -4,16 +4,17 @@ from dataclasses import dataclass, field
 from datetime import datetime, timedelta
 import numpy as np
 import numpy.ma as ma
+from numpy.lib.stride_tricks import sliding_window_view
 from numpy.typing import NDArray
 from dateutil import parser
 import matplotlib.pyplot as plt
 import matplotlib.dates as mdates
 import matplotlib.gridspec as gridspec
+import matplotlib.colors as mcolors
 from matplotlib.animation import FuncAnimation, PillowWriter
 from matplotlib.collections import LineCollection
 from matplotlib.lines import Line2D
 from matplotlib.ticker import ScalarFormatter, FuncFormatter
-from matplotlib import colors as mcolors
 from matplotlib.colors import Normalize, LogNorm
 from scipy.ndimage import gaussian_filter1d
 
@@ -23,8 +24,68 @@ from ._adcp_position import ADCPPosition
 from .plotting import PlottingShell
 
 class ADCP():
-    def __init__(self, cfg: str | Path, name: str) -> None:
+    """Container for reading, processing, and analyzing ADCP PD0 data.
 
+    This class wraps the full ADCP processing workflow, including:
+    file decoding, time and geometry setup, platform position handling,
+    velocity transformations, backscatter/SSC derivation, masking, and
+    convenience accessors for beam and velocity time series.
+
+    Attributes:
+        _cfg (dict): Configuration dictionary for the ADCP object.
+        _pd0_path (pathlib.Path): Path to the PD0 (.000) file.
+        name (str): Name of the ADCP dataset, typically used in plots
+            and outputs.
+        _pd0 (Pd0Decoder): Low-level PD0 decoder instance.
+        plot (PlottingShell): Helper object for generating plots.
+        corrections (ADCPCorrections): Global corrections applied to
+            the dataset (magnetic declination, UTC offset, transect
+            shifts, etc.).
+        time (ADCPTime): Ensemble-level timing and numbering metadata.
+        aux_sensor_data (ADCPAuxSensorData): Auxiliary sensor data
+            (pressure, tilt, temperature, salinity, etc.).
+        position (ADCPPosition): Platform position and orientation time
+            series, resampled to ensemble times.
+        geometry (ADCPGeometry): Instrument and beam geometry, bin
+            spacing, and derived spatial coordinates.
+        beam_data (ADCPBeamData): Raw and derived beam-space data
+            (echo intensity, correlation magnitude, backscatter, SSC).
+        bottom_track (ADCPBottomTrack | None): Bottom-track data and
+            derived quantities, if bottom tracking is active.
+        velocity (Velocity): Velocity fields in beam, instrument, ship,
+            and earth frames, including speed and direction.
+        water_properties (WaterProperties): Water-column properties used
+            for attenuation and density-related calculations.
+        sediment_properties (SedimentProperties): Sediment parameters
+            used in SSC and attenuation calculations.
+        ssc_params (SSCParams): Calibration parameters for converting
+            backscatter to suspended solids concentration.
+        abs_params (AbsoluteBackscatterParams): Parameters used in
+            absolute backscatter and signal-to-noise calculations.
+        masking (MaskParams): Configuration and composite masks for
+            velocity and beam data.
+        _bt_mode_active (bool): Flag indicating whether bottom track
+            data are present and used.
+    """
+    def __init__(self, cfg: str | Path) -> None:
+        """Initialize an ADCP instance from a configuration mapping.
+
+        The configuration is expected to include at least a ``filename``
+        entry pointing to a valid PD0 (.000) file. All nested dataclasses
+        (time, geometry, beam data, bottom track, water/sediment
+        properties, SSC/backscatter parameters, and masking options) are
+        initialized here using the PD0 contents and the configuration.
+
+        Args:
+            cfg (str | pathlib.Path | dict): Configuration mapping or a
+                path to a configuration file that has already been read
+                into a dictionary-like object. Must contain a
+                ``"filename"`` key pointing to a PD0 file.
+
+        Raises:
+            ValueError: If the configuration does not contain a valid
+                ``"filename"`` entry for the PD0 file.
+        """
         self._cfg = cfg 
         self._pd0_path = self._cfg.get("filename", None)
         self.name = self._cfg.get("name", 'MyADCP')
@@ -671,13 +732,15 @@ class ADCP():
         self.beam_data.suspended_solids_concentration = self._calculate_ssc()
         
     def _get_bin_midpoints(self) -> np.ndarray:
-        """
-        Get the midpoints of the bins as function of distance from the transducer. 
-        
+        """Compute distances from the transducer to bin centers.
+
+        The distances are computed along the beam from the transducer
+        to the center of each depth cell, based on the distance to the
+        first bin and the bin length.
+
         Returns:
-        -------
-        np.ndarray
-            Midpoints of the bins with shape (n_cells,).
+            np.ndarray: One-dimensional array of bin midpoint distances
+            in meters with shape ``(n_bins,)``.
         """
         beam_length = self.geometry.n_bins * self.geometry.bin_length
         bin_midpoints = np.linspace(
@@ -688,20 +751,28 @@ class ADCP():
         return bin_midpoints 
 
     def get_beam_data(self, field_name: str, mask: bool = True) -> np.ndarray:
-        """
-        Retrieve a specific beam data field, optionally masked.
-    
-        Parameters
-        ----------
-        field_name : str
-            Name of the beam data field to retrieve (e.g., 'echo_intensity', 'correlation_magnitude').
-        mask : bool, optional
-            If True, returns masked data. If False, returns raw unmasked data.
-    
-        Returns
-        -------
-        np.ndarray
-            The requested beam data array.
+        """Return a beam-space variable, optionally masked.
+
+        Args:
+            field_name (str): Name of the beam data field to retrieve.
+                Valid values are:
+                ``'echo_intensity'``, ``'correlation_magnitude'``,
+                ``'percent_good'``, ``'absolute_backscatter'``,
+                ``'signal_to_noise_ratio'``,
+                ``'suspended_solids_concentration'``,
+                ``'sediment_attenuation'``.
+            mask (bool, optional): If True, applies
+                ``self.masking.beam_data_mask`` and sets masked values
+                to ``np.nan``. If False, returns the raw unmasked data.
+                Defaults to True.
+
+        Returns:
+            np.ndarray: Beam data array with shape
+            ``(n_ensembles, n_bins, n_beams)``.
+
+        Raises:
+            ValueError: If ``field_name`` is not one of the supported
+                beam data fields.
         """
         field_name = field_name.lower().strip()
     
@@ -719,54 +790,70 @@ class ADCP():
         
         return data
     
-    def get_beam_series(self,
-                        field_name: str,
-                        mode: str,
-                        target,
-                        beam="mean"):
+    def get_beam_series(self, field_name: str, mode: str, target: Union[int, float, str], beam: Union[str, int, list[int]]="mean"):
+        """Extract a time series from beam-space data using bin selection
+        or aggregation rules.
+
+        The method operates on ``self.get_beam_data(field_name, mask=True)``
+        and either:
+        - selects a single bin per beam using a numeric target, or
+        - aggregates over all bins (and optionally beams) using a
+          string target (e.g. ``"mean"`` or ``"p90"``).
+
+        Args:
+            field_name (str): Beam field name passed to
+                :meth:`get_beam_data`, for example
+                ``'echo_intensity'`` or ``'absolute_backscatter'``.
+            mode (str): Selection mode when ``target`` is numeric. One
+                of:
+                * ``'bin'``: select a fixed 1-based bin index.
+                * ``'range'``: select the bin whose along-beam distance
+                  (m) is closest to ``target`` using
+                  ``self.geometry.bin_midpoint_distances``.
+                * ``'hab'``: select, per ensemble and beam, the bin
+                  whose height above bed (m) is closest to ``target``
+                  using ``self.geometry.HAB_beam_midpoint_distances``.
+            target (int | float | str): Selector or aggregation
+                instruction.
+                - If numeric (int/float) and ``mode`` is ``'bin'``,
+                  ``'range'``, or ``'hab'``, it is interpreted as the
+                  target bin index, range (m), or HAB (m).
+                - If a string, it applies an aggregation across all bins
+                  for the selected beams:
+                  * ``'mean'`` or ``'avg'``: mean over bins × beams.
+                  * ``'pXX'``: percentile (0–100) over bins × beams,
+                    e.g. ``'p50'``, ``'p90'``.
+            beam (str | int | list[int], optional): Beam selection
+                (1-based indices). If ``'mean'`` or ``'avg'``, all beams
+                are included. If an integer or list of integers, only
+                those beams are used. Defaults to ``'mean'``.
+
+        Returns:
+            tuple[np.ndarray, dict]:
+                - ``out``: One-dimensional array with shape
+                  ``(n_ensembles,)`` containing the selected or
+                  aggregated values.
+                - ``meta``: Dictionary with diagnostics, including:
+                    * ``'mode'`` (str): ``'bin'``, ``'range'``,
+                      ``'hab'``, or ``'aggregate'``.
+                    * ``'beam_mask'`` (np.ndarray): Boolean beam
+                      mask with shape ``(n_beams,)``.
+                    * For ``mode='bin'``/``'range'``:
+                      ``'bin_index'`` (int), and for ``'range'``,
+                      ``'depth_m'`` (float).
+                    * For ``mode='hab'``:
+                      per-beam bin indices/HAB arrays and ensemble
+                      mean HAB.
+                    * For aggregation targets:
+                      ``'aggregation'`` (e.g. ``'mean'``, ``'p90'``).
+
+        Raises:
+            ValueError: If ``field_name``, ``mode``, or string
+                ``target`` is invalid, or if a numeric bin/range/HAB
+                index is out of range.
+            TypeError: If ``target`` is a sequence instead of a single
+                numeric value or aggregation string.
         """
-        Time series from ADCP beam data with either a numeric selector or an
-        all-bins aggregation controlled by `target`.
-    
-        Parameters
-        ----------
-        field_name : str
-            Beam field name passed to get_beam_data(...).
-        mode : {'bin', 'range', 'hab'}
-            Used only when `target` is numeric.
-            'bin'   -> select by 1-based bin index (single bin).
-            'range' -> select closest bin by along-beam distance [m].
-            'hab'   -> select closest bin by height-above-bed [m].
-        target : int | float | str
-            If numeric: value used with `mode` to pick a single bin per beam.
-              - 'bin'   : 1-based bin index.
-              - 'range' : target distance [m].
-              - 'hab'   : target HAB [m].
-            If str: aggregation over ALL bins (per ensemble) for selected beams.
-              - 'mean' or 'avg' : mean over bins×beams.
-              - 'pXX'           : percentile XX in [0,100] over bins×beams, e.g. 'p50','p90'.
-        beam : {'mean', int, list[int]}
-            Beam selection; 1-based indices. 'mean' selects all beams.
-    
-        Returns
-        -------
-        out : np.ndarray
-            Shape (n_ensembles,) aggregated values.
-        meta : dict
-            Diagnostics:
-              - 'mode' : str  ('bin'/'range'/'hab' or 'aggregate')
-              - 'beam_mask' : (nm,) bool
-              - If numeric target and mode='bin'/'range':
-                  * 'bin_index' : int (1-based)
-                  * 'depth_m'   : float (for 'range', selected along-beam distance)
-              - If numeric target and mode='hab':
-                  * 'bin_index_per_beam' : (ne, nm) float (1-based; NaN if unselected)
-                  * 'hab_m_per_beam'     : (ne, nm) float
-                  * 'hab_m'              : (ne,) float beam-mean HAB
-              - If aggregation target (str):
-                  * 'aggregation' : 'mean' or 'pXX'
-        """
-        import numpy as np
     
         data = self.get_beam_data(field_name, mask=True)  # (ne, nb, nm)
         ne, nb, nm = data.shape
@@ -861,29 +948,40 @@ class ADCP():
         out[empty] = np.nan
         return out, meta
 
+    def get_velocity_data(self, coord_sys: str = "earth", mask: bool = True,):
+        """Return velocity data in a chosen coordinate system.
 
-    def get_velocity_data(self,
-                          coord_sys: str = "earth",
-                          mask: bool = True,):
+        Velocities are drawn from ``self.velocity`` (which is populated
+        at initialization) and optionally masked and smoothed using a
+        centered rolling average in ensemble space.
+
+        Args:
+            coord_sys (str, optional): Target coordinate system. One of
+                ``'instrument'``, ``'ship'``, or ``'earth'``. Defaults
+                to ``'earth'``.
+            mask (bool, optional): If True, applies
+                ``self.masking.velocity_data_mask`` before computing
+                speed and direction. Defaults to True.
+
+        Returns:
+            tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray, np.ndarray, np.ndarray]:
+                A 6-tuple of arrays with shape ``(n_ensembles, n_bins)``:
+                - ``v1``: First component (X / S / U, depending on
+                  ``coord_sys``).
+                - ``v2``: Second component (Y / F / V).
+                - ``v3``: Third component (Z / U / W).
+                - ``ev``: Error velocity (always defined in earth
+                  frame).
+                - ``speed``: Horizontal speed magnitude,
+                  ``sqrt(v1**2 + v2**2)``.
+                - ``direction``: Azimuthal direction in degrees
+                  (0–360), defined such that 0° is along +v2 and angles
+                  increase clockwise toward +v1.
+
+        Raises:
+            ValueError: If ``coord_sys`` is not one of
+                ``{'instrument', 'ship', 'earth'}``.
         """
-        Retrieve velocity data in a chosen orthogonal frame. Optionally mask and
-        apply a centered rolling average over ensembles.
-    
-        Parameters
-        ----------
-        coord_sys : {'instrument', 'ship', 'earth'}, default 'earth'
-            Coordinate system to retrieve.
-        mask : bool, default True
-            If True, apply self.masking.velocity_data_mask to outputs.
-    
-        Returns
-        -------
-        tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray, np.ndarray, np.ndarray]
-            (v1, v2, v3, ev, speed, direction_deg_azimuth)
-        """
-        import numpy as np
-        from numpy.lib.stride_tricks import sliding_window_view
-    
         def _nanmean_centered(a: np.ndarray, win: int) -> np.ndarray:
             if win is None or win <= 1:
                 return a
@@ -935,79 +1033,65 @@ class ADCP():
     
         return v1, v2, v3, ev, speed, direction
 
-    def get_velocity_series(
-        self,
-        component: str,
-        mode: str,
-        target,
-    ):
+    def get_velocity_series(self, component: str, mode: str, target: Union[int, float, str]):
+        """Extract a time series from earth-frame velocities.
+
+        This method uses :meth:`get_velocity_data` with
+        ``coord_sys='earth'`` and then either:
+        - selects a single bin per ensemble using a numeric target, or
+        - aggregates over all bins using a string target (e.g.
+          ``'mean'`` or ``'p90'``).
+
+        Args:
+            component (str): Velocity quantity to extract. One of:
+                * ``'u'``: first horizontal component (eastward).
+                * ``'v'``: second horizontal component (northward).
+                * ``'w'``: vertical component.
+                * ``'ev'``: error velocity.
+                * ``'speed'``: horizontal speed magnitude.
+                * ``'direction'``: flow direction in degrees (0–360).
+            mode (str): Selection mode when ``target`` is numeric. One
+                of:
+                * ``'bin'``: select a fixed 1-based bin index.
+                * ``'range'``: select the bin whose range (m) is
+                  closest to ``target``. Uses either
+                  ``geometry.bin_midpoint_distances`` or
+                  ``geometry.range_bin_midpoints``.
+                * ``'hab'``: select, per ensemble, the bin whose
+                  height above bed (m) is closest to ``target``. Uses
+                  either ``geometry.HAB_cell_midpoint_distances`` or
+                  ``geometry.hab_bin_midpoints``.
+            target (int | float | str): Selector or aggregation
+                instruction.
+                - Numeric (int/float): used with ``mode`` as bin index,
+                  range (m), or HAB (m).
+                - String: aggregation over all bins:
+                  * ``'mean'`` or ``'avg'``: mean across bins. For
+                    ``'direction'`` a circular mean is used.
+                  * ``'pXX'``: percentile (0–100) across bins, e.g.
+                    ``'p50'``, ``'p90'``. Not allowed for
+                    ``'direction'``.
+
+        Returns:
+            tuple[np.ndarray, dict]:
+                - ``out``: One-dimensional array of shape
+                  ``(n_ensembles,)`` containing the selected or
+                  aggregated values.
+                - ``meta``: Dictionary of diagnostics, including:
+                    * ``'component'`` (str): requested component.
+                    * ``'mode'`` (str): ``'bin'``, ``'range'``,
+                      ``'hab'``, or ``'aggregate'``.
+                    * For numeric selection: bin indices and selected
+                      range/HAB values.
+                    * For aggregation: ``'aggregation'`` and whether a
+                      circular mean was used (``'circular'``).
+
+        Raises:
+            ValueError: If ``component``, ``mode``, the distance/HAB
+                geometry arrays, or a string ``target`` are invalid.
+            TypeError: If ``target`` is a sequence instead of a single
+                numeric value or aggregation string.
         """
-        Time series from ADCP earth-coordinate velocities with either a numeric
-        per-bin selector or an all-bins aggregation controlled by `target`.
-    
-        Data source
-        -----------
-        Uses self.get_velocity_data(coord_sys="earth", mask=True) which must return:
-            v1, v2, v3, ev, speed, direction  # each (n_ensembles, n_bins)
-    
-        Parameters
-        ----------
-        component : {'u', 'v', 'w', 'ev', 'speed', 'direction'}
-            Velocity quantity to extract:
-              - 'u','v','w' map to v1,v2,v3 in earth frame.
-              - 'ev' is error velocity.
-              - 'speed' is horizontal speed magnitude.
-              - 'direction' is flow direction (degrees, 0–360 expected).
-        mode : {'bin', 'range', 'hab'}
-            Used only when `target` is numeric.
-            'bin'   -> select by 1-based bin index (single bin).
-            'range' -> select closest bin by along-beam or range distance [m].
-            'hab'   -> select closest bin by height-above-bed [m].
-        target : int | float | str
-            If numeric: value used with `mode` to pick a single bin per ensemble.
-              - 'bin'   : 1-based bin index.
-              - 'range' : target distance [m] (requires per-bin distances).
-              - 'hab'   : target HAB [m] (requires per-ensemble per-bin HAB).
-            If str: aggregation over ALL bins (per ensemble):
-              - 'mean' or 'avg' : mean over bins.
-                  * for 'direction' uses circular mean.
-              - 'pXX'           : percentile XX in [0,100] over bins, e.g. 'p50','p90'.
-                  * not supported for 'direction' (raises ValueError).
-    
-        Returns
-        -------
-        out : np.ndarray
-            Shape (n_ensembles,) aggregated values.
-        meta : dict
-            Diagnostics:
-              - 'component' : str
-              - 'mode'      : str  ('bin'/'range'/'hab' or 'aggregate')
-              - If numeric target and mode='bin':
-                  * 'bin_index' : int (1-based)
-              - If numeric target and mode='range':
-                  * 'bin_index' : int (1-based)
-                  * 'range_m'   : float (selected bin center distance)
-              - If numeric target and mode='hab':
-                  * 'bin_index_per_ens' : (ne,) float (1-based; NaN if unselected)
-                  * 'hab_m_per_ens'     : (ne,) float
-                  * 'hab_note'          : str (source array name)
-              - If aggregation target (str):
-                  * 'aggregation' : 'mean' or 'pXX'
-                  * 'circular'    : bool (True for direction-mean)
-    
-        Notes
-        -----
-        Required geometry arrays for numeric selection:
-          - For mode='range': one of
-              self.geometry.bin_midpoint_distances               #(nb,)
-              self.geometry.range_bin_midpoints                  #(nb,)
-            If neither exists, a ValueError is raised specifying what to provide.
-          - For mode='hab': one of
-              self.geometry.HAB_cell_midpoint_distances          #(ne, nb)
-              self.geometry.hab_bin_midpoints                    #(ne, nb)
-            If neither exists, a ValueError is raised specifying what to provide.
-        """
-        import numpy as np
     
         # ---------- fetch earth-frame velocity products ----------
         v1, v2, v3, ev, speed, direction = self.get_velocity_data(
@@ -1155,7 +1239,25 @@ class ADCP():
         return out, meta
 
     def _generate_velocity_data_masks(self) ->None:
-    
+        """Build the composite mask for velocity-related variables.
+
+        This method combines several criteria into
+        ``self.masking.velocity_data_mask``, including:
+
+        * speed thresholds (``vel_min``/``vel_max``),
+        * percent-good limits (using beams 1 and 4),
+        * error-velocity filtering (either user-specified or
+          automatically derived using an IQR-based rule),
+        * ensemble index limits (``first_good_ensemble`` /
+          ``last_good_ensemble``),
+        * datetime limits (``start_datetime`` / ``end_datetime``),
+        * and, if bottom track is active, a bottom-track-based mask
+          with an optional cell offset.
+
+        The result is a boolean array with shape
+        ``(n_ensembles, n_bins)`` where True indicates masked (invalid)
+        data.
+        """
         # speed
         speed = self.velocity.from_earth.speed
         speed_mask = (speed > self.masking.vel_max) | (speed < self.masking.vel_min)
@@ -1206,6 +1308,25 @@ class ADCP():
         self.masking.velocity_data_mask = master_mask
                        
     def _generate_beam_data_masks(self) -> None:
+        """Build the composite mask for beam-space variables.
+
+        This method combines several criteria into
+        ``self.masking.beam_data_mask``, including:
+
+        * correlation magnitude thresholds
+          (``cormag_min``/``cormag_max``),
+        * echo intensity thresholds (``echo_min``/``echo_max``),
+        * absolute backscatter thresholds (``abs_min``/``abs_max``),
+        * ensemble index limits (``first_good_ensemble`` /
+          ``last_good_ensemble``),
+        * datetime limits (``start_datetime`` / ``end_datetime``),
+        * and, if bottom track is active, a bottom-track-based mask
+          with an optional cell offset.
+
+        The result is a boolean array with shape
+        ``(n_ensembles, n_bins, n_beams)`` where True indicates masked
+        (invalid) data.
+        """
         # correlation magnitude
         cmag = self.beam_data.correlation_magnitude
         cmag_mask = (cmag > self.masking.cormag_max) | (cmag < self.masking.cormag_min)
@@ -1239,19 +1360,29 @@ class ADCP():
         self.masking.beam_data_mask = master_mask
         
     def _generate_bottom_track_mask(self, cell_offset: int = 0, incl_sidelobe = True) -> None:
-        """
-        Masks beam data below the seabed based on bottom track range.
-    
-        Parameters
-        ----------
-        cell_offset : int, optional
-            Number of bins to offset the mask above (+) or below (-) the bottom track cell.
-            Default is 0, which masks the bottom track cell itself.
-        
-        incl_sidelobe: bool, optional
-            Include estimated sidelobe interference in the calculation.
-            
-            An additional d*cos(beam_angle) of depth to seabed removed (~6% for 20 degree beam angle).
+        """Create a mask indicating cells above the seabed based on
+        bottom-track ranges.
+
+        The bottom-track range for each beam/ensemble is compared to the
+        along-beam bin-center distances, optionally adjusted for
+        sidelobe interference and a user-specified cell offset.
+
+        Args:
+            cell_offset (int, optional): Number of additional cells to
+                offset the mask relative to the bottom-track cell.
+                Positive values move the mask shallower (masking more
+                cells above the bed), and negative values move it
+                deeper. Defaults to 0.
+            incl_sidelobe (bool, optional): If True, applies a
+                sidelobe-interference correction by scaling the
+                bottom-track range by ``cos(beam_angle)``. Defaults to
+                True.
+
+        Returns:
+            np.ndarray: Boolean mask with shape
+            ``(n_ensembles, n_bins, n_beams)`` where True indicates
+            valid (above-bottom) cells and False indicates cells at or
+            below the seabed.
         """
         # Get bottom track range (in meters)
         bt_range = self.bottom_track.range_to_seabed  # shape: (n_beams, n_ensembles)
@@ -1275,22 +1406,21 @@ class ADCP():
         
         return mask
         
-        
     def _get_datetimes(self, apply_corrections: bool = True) -> List[datetime]:
-        """
-        Get the datetimes for each ensemble in the PD0 file.
-    
-        If enabled, applies UTC offset and transect time shift corrections.
-    
-        Parameters
-        ----------
-        apply_corrections : bool, optional
-            Whether to apply time corrections (default is True).
-    
-        Returns
-        -------
-        List[datetime]
-            A list of datetime objects corresponding to each ensemble.
+        """Return ensemble datetimes, optionally applying time corrections.
+
+        Datetimes are read from the PD0 file and, if requested, are
+        shifted by the configured UTC offset and transect time shift.
+
+        Args:
+            apply_corrections (bool, optional): If True, applies
+                ``corrections.utc_offset`` and
+                ``corrections.transect_shift_t`` (in hours) to the raw
+                datetimes. Defaults to True.
+
+        Returns:
+            np.ndarray: One-dimensional array of ``datetime`` objects
+            with shape ``(n_ensembles,)``.
         """
         datetimes = self._pd0.get_datetimes()
         if apply_corrections:
@@ -1300,24 +1430,29 @@ class ADCP():
         
         return np.array(datetimes)
     
-    
     def _beam_to_inst_coords(self, B):
-        """
-        Beam/bottom-track → instrument-frame.
-    
-        Parameters
-        ----------
-        B : np.ndarray
-            Profile beams: (T, K, 4) = [b1,b2,b3,b4]
-            Bottom-track beams: (T, 4)
-            Bottom-track instrument: (T, 3) = [X,Y,Z]
-    
-        Returns
-        -------
-        I : np.ndarray
-            If B is (T,K,4): (T, K, 4) = [X,Y,Z,error]
-            If B is (T,4):   (T, 3)    = [X,Y,Z]
-            If B is (T,3):   (T, 3)    = [X,Y,Z]
+        """Transform beam velocities into instrument-frame coordinates.
+
+        The transformation uses the beam pattern and beam angle from
+        the PD0 fixed leader configuration. It supports both profile
+        velocities and bottom-track velocities.
+
+        Args:
+            B (np.ndarray): Beam-space velocities. Accepted shapes are:
+                * ``(T, K, 4)``: profile beams
+                  ``[..., 0:4] = [b1, b2, b3, b4]``.
+                * ``(T, 4)``: bottom-track beams.
+                * ``(T, 3)``: already in instrument frame
+                  ``[X, Y, Z]`` (returned unchanged except for dtype).
+
+        Returns:
+            np.ndarray: Instrument-frame velocities. Shapes mirror the
+            input:
+                * Input ``(T, K, 4)`` → output ``(T, K, 4)`` where
+                  ``[..., 0:3] = [X, Y, Z]`` and ``[..., 3]`` is error
+                  velocity.
+                * Input ``(T, 4)`` → output ``(T, 3)`` = ``[X, Y, Z]``.
+                * Input ``(T, 3)`` → output ``(T, 3)`` = ``[X, Y, Z]``.
         """
         B = np.asarray(B, dtype=float)
     
@@ -1344,26 +1479,28 @@ class ADCP():
   
     def _inst_to_earth_coords(self,I, heading_deg, pitch_deg, roll_deg,
                       declination_deg=0.0, heading_bias_deg=0.0, use_tilts=True):
-        """
-        Rotate instrument-frame velocities to Earth (ENU).
-    
-        Parameters
-        ----------
-        I : ndarray, shape (T, K, 3)
-            Instrument velocities [X,Y,Z] in m/s for T ensembles and K bins.
-        heading_deg, pitch_deg, roll_deg : ndarray, shape (T,)
-            Timeseries of heading, pitch, roll in degrees.
-        declination_deg : float, optional
-            Magnetic declination added to heading.
-        heading_bias_deg : float, optional
-            Additional heading bias.
-        use_tilts : bool, optional
-            If False, set pitch=roll=0.
-    
-        Returns
-        -------
-        E : ndarray, shape (T, K, 3)
-            Earth velocities [E,N,U] in m/s.
+        """Rotate instrument-frame velocities into earth (ENU) coordinates.
+
+        Args:
+            I (np.ndarray): Instrument-frame velocities with shape
+                ``(T, K, 3)`` where the last axis is ``[X, Y, Z]``.
+            heading_deg (np.ndarray): Heading time series in degrees
+                with shape ``(T,)``.
+            pitch_deg (np.ndarray): Pitch time series in degrees with
+                shape ``(T,)``.
+            roll_deg (np.ndarray): Roll time series in degrees with
+                shape ``(T,)``.
+            declination_deg (float, optional): Magnetic declination
+                added to the heading (degrees). Defaults to 0.0.
+            heading_bias_deg (float, optional): Additional heading bias
+                (degrees). Defaults to 0.0.
+            use_tilts (bool, optional): If False, pitch and roll are
+                treated as zero when constructing the rotation
+                matrices. Defaults to True.
+
+        Returns:
+            np.ndarray: Earth-frame velocities with shape ``(T, K, 3)``
+            where the last axis is ``[E, N, U]`` in m/s.
         """
         T = I.shape[0]
         K = I.shape[1]
@@ -1391,22 +1528,26 @@ class ADCP():
         return E
     
     def _inst_to_ship_coords(self,I, pitch_deg, roll_deg, use_tilts=True):
-        """
-        Rotate instrument-frame velocities to Ship (SFU).
-    
-        Parameters
-        ----------
-        I : ndarray, shape (T, K, 3)
-            Instrument velocities [X, Y, Z] in m/s.
-        pitch_deg, roll_deg : ndarray, shape (T,)
-            Pitch and roll time series in degrees.
-        use_tilts : bool, default True
-            If False, set pitch=roll=0.
-    
-        Returns
-        -------
-        S : ndarray, shape (T, K, 3)
-            Ship velocities [Starboard, Forward, Up] in m/s.
+        """Rotate instrument-frame velocities into ship (SFU) coordinates.
+
+        The transformation assumes zero heading (H = 0) so that the
+        ship frame is aligned with the instrument frame in yaw, and
+        only pitch and roll rotations are applied.
+
+        Args:
+            I (np.ndarray): Instrument-frame velocities with shape
+                ``(T, K, 3)`` where the last axis is ``[X, Y, Z]``.
+            pitch_deg (np.ndarray): Pitch time series in degrees with
+                shape ``(T,)``.
+            roll_deg (np.ndarray): Roll time series in degrees with
+                shape ``(T,)``.
+            use_tilts (bool, optional): If False, pitch and roll are
+                treated as zero when constructing the rotation
+                matrices. Defaults to True.
+
+        Returns:
+            np.ndarray: Ship-frame velocities with shape ``(T, K, 3)``
+            where the last axis is ``[Starboard, Forward, Up]`` in m/s.
         """
         
         T = I.shape[0]
@@ -1430,17 +1571,33 @@ class ADCP():
             S[t] = I[t] @ M.T
     
         return S
-            
-            
+               
     def _get_transformed_velocity(
         self, target_frame: str = "earth"
     ) -> Tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray]:
-        """
-        Get velocity data from PD0 and convert to the target frame.
-    
-        Returns
-        -------
-        u, v, w, err arrays. For beam/instrument these map to b1..b4 / X,Y,Z,err.
+        """Return profile velocities transformed to a target frame.
+
+        Velocities are read from the PD0 file in its native coordinate
+        frame and, if necessary, transformed to the requested frame
+        (beam, instrument, ship, or earth). Error velocity is carried
+        through where available.
+
+        Args:
+            target_frame (str, optional): Desired output frame. One of
+                ``'beam'``, ``'instrument'``, ``'ship'``, or
+                ``'earth'``. Defaults to ``'earth'``.
+
+        Returns:
+            tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray]:
+                Component arrays with shape ``(T, K)``:
+                - ``u``: first component (beam/instrument/ship/earth).
+                - ``v``: second component.
+                - ``w``: third component.
+                - ``err``: error velocity.
+
+        Raises:
+            ValueError: If the native frame is unknown or the requested
+                transformation is not supported.
         """
         frame = self._pd0.fixed_leaders[0].coordinate_transform.frame
         heading_deg = self.aux_sensor_data.heading
@@ -1505,25 +1662,32 @@ class ADCP():
             f"Transformation from native '{frame}' to '{target_frame}' not supported."
         )
 
-        
     def _get_bt_velocity(
         self, target_frame: str = "earth"
     ) -> Tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray]:
-        """
-        Bottom-track velocities converted to the target frame.
-    
-        Parameters
-        ----------
-        target_frame : {'beam', 'instrument', 'ship', 'earth'}, default 'earth'
-    
-        Returns
-        -------
-        Tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray]
-            Component arrays with shape (T,):
-            - beam: b1, b2, b3, b4
-            - instrument: X, Y, Z, err
-            - ship: S, F, U, err
-            - earth: E, N, U, err
+        """Return bottom-track velocities transformed to a target frame.
+
+        Bottom-track velocities are decoded from the PD0 file in their
+        native coordinate frame and, if requested, converted to
+        instrument, ship, or earth frames using the current attitude and
+        correction parameters.
+
+        Args:
+            target_frame (str, optional): Desired output frame. One of
+                ``'beam'``, ``'instrument'``, ``'ship'``, or
+                ``'earth'``. Defaults to ``'earth'``.
+
+        Returns:
+            tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray]:
+                Component arrays with shape ``(T,)``:
+                - beam: ``b1``, ``b2``, ``b3``, ``b4``.
+                - instrument: ``X``, ``Y``, ``Z``, ``err``.
+                - ship: ``S``, ``F``, ``U``, ``err``.
+                - earth: ``E``, ``N``, ``U``, ``err``.
+
+        Raises:
+            ValueError: If the native frame or requested transformation
+                is not supported for bottom-track data.
         """
         frame = self._pd0.fixed_leaders[0].coordinate_transform.frame
     
@@ -1582,12 +1746,24 @@ class ADCP():
         raise ValueError(f"Transformation from native '{frame}' to '{target_frame}' not supported for BT.")
 
     def _calculate_height_above_bed(self, clamp_zero: bool = True):
+        """Compute height above bed (HAB) for each ensemble, bin, and beam.
+
+        HAB is derived from the adjusted bottom-track range and the
+        vertical distance of each bin center from the transducer, using
+        beam geometry in earth coordinates.
+
+        Args:
+            clamp_zero (bool, optional): If True, negative HAB values
+                are set to ``np.nan`` (i.e., bins below the interpolated
+                seabed are treated as invalid). Defaults to True.
+
+        Returns:
+            np.ndarray: HAB array with shape ``(n_ensembles, n_bins,
+            n_beams)`` in meters. Entries are ``np.nan`` if beam-facing
+            is not ``'down'``, bottom-track geometry is unavailable, or
+            the necessary arrays cannot be reconciled to the expected
+            shapes.
         """
-        HAB per ensemble/bin/beam using self.bottom_track.adjusted_range_to_seabed.
-        Returns array with shape (n_ensembles, n_bins, n_beams).
-        """
-        import numpy as np
-    
         ne = int(self.time.n_ensembles)
         nb = int(self.geometry.n_bins)
         nm = int(self.geometry.n_beams)

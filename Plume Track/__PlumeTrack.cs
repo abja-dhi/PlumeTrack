@@ -254,33 +254,6 @@ namespace Plume_Track
 
         private void menuExit_Click(object sender, EventArgs e)
         {
-            //if (!_Globals.isSaved || !isSaved)
-            //{
-            //    DialogResult result = MessageBox.Show(
-            //    text: "Do you want to save the current project before exiting?",
-            //    caption: "Unsaved changes",
-            //    buttons: MessageBoxButtons.YesNoCancel,
-            //    icon: MessageBoxIcon.Warning);
-            //    if (result == DialogResult.Yes)
-            //    {
-            //        int status = SaveProject(); // Save the current project
-            //        if (status == 1)
-            //        {
-            //            Application.Exit();
-            //            return;
-            //        }
-            //        else
-            //            return;
-            //    }
-            //    else if (result == DialogResult.Cancel)
-            //    {
-            //        return; // User chose to cancel, do not exit
-            //    }
-            //    else if (result == DialogResult.No)
-            //    {
-            //        Application.Exit(); // Exit without saving
-            //    }
-            //}
             Close();
         }
 
@@ -313,8 +286,6 @@ namespace Plume_Track
                 PythonEngine.Shutdown(); // Shutdown Python engine
             }
             catch { }
-
-            //Application.Exit(); // Exit the application
         }
 
         private void frmMain_Activated(object sender, EventArgs e)
@@ -367,7 +338,11 @@ namespace Plume_Track
                 {
                     string? type = xmlNode.Attributes?["type"]?.Value ?? string.Empty;
                     itemDelete.Visible = type != "Project"; // Disable delete for the root project node
-
+                    if (type == "HDModel" || type == "MTDModel" || type == "WaterSample" || type == "OBSVerticalProfile" || type == "Survey")
+                        itemPlot.Visible = false;
+                    else 
+                        itemPlot.Visible = true;
+                    
                     if (type == "NTU2SSC" || type == "BKS2SSC" || type == "BKS2NTU")
                     {
                         XmlNode? modeNode = xmlNode.SelectSingleNode("Mode");

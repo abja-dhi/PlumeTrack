@@ -400,7 +400,7 @@ namespace Plume_Track
             lbl2DGridOpacity.Name = "lbl2DGridOpacity";
             lbl2DGridOpacity.Size = new Size(164, 30);
             lbl2DGridOpacity.TabIndex = 7;
-            lbl2DGridOpacity.Text = "Grid Opeacity";
+            lbl2DGridOpacity.Text = "Grid Opacity";
             lbl2DGridOpacity.TextAlign = ContentAlignment.MiddleLeft;
             // 
             // lbl2DGridColor
@@ -985,7 +985,7 @@ namespace Plume_Track
             lbl3DGridOpacity.Name = "lbl3DGridOpacity";
             lbl3DGridOpacity.Size = new Size(164, 30);
             lbl3DGridOpacity.TabIndex = 7;
-            lbl3DGridOpacity.Text = "Grid Opeacity";
+            lbl3DGridOpacity.Text = "Grid Opacity";
             lbl3DGridOpacity.TextAlign = ContentAlignment.MiddleLeft;
             // 
             // lbl3DGridColor
@@ -1426,7 +1426,6 @@ namespace Plume_Track
         private Label lbl2DBackColor;
         private Label lbl2DFieldName;
         private Label lbl2Dcmap;
-        private ColormapComboBox combo2Dcmap;
         private Label lbl2Dvmin;
         private Label lbl2Dvmax;
         private Label lbl2DPadDeg;
@@ -1474,7 +1473,6 @@ namespace Plume_Track
         private Label lbl3DBackColor;
         private Label lbl3DFieldName;
         private Label lbl3Dcmap;
-        private ColormapComboBox combo3Dcmap;
         private Label lbl3Dvmin;
         private Label lbl3Dvmax;
         private Label lbl3DPadDeg;
@@ -1519,6 +1517,5 @@ namespace Plume_Track
         private TreeView treeSurveys3D;
         private TreeView treeShapefiles;
         private ToolTip toolTip1;
-
     }
 }

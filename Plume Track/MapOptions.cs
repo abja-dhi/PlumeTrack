@@ -30,188 +30,109 @@ namespace Plume_Track
         public List<Button> shpColorButtons;
         public List<TextBox> shpSizeTextBoxes;
 
-        private TableLayoutPanel tableShpPoint;
-        private Label lblShpPointPath;
-        private TextBox txtShpPointPath;
-        private Label lblShpPointType;
-        private TextBox txtShpPointType;
-        private Label lblShpPointColor;
-        private Panel pnlShpPointColor;
-        private Button btnShpPointColor;
-        private Label lblShpPointMarker;
-        private ComboBox comboShpPointMarker;
-        private Label lblShpPointMarkerSize;
-        private NumericUpDown numShpPointMarkerSize;
-        private Label lblShpPointMarkerAlpha;
-        private NumericUpDown numShpPointMarkerAlpha;
+        private readonly ColormapComboBox combo2Dcmap = new(_Globals.CMapsPath, "combo2Dcmap");
+        private readonly ColormapComboBox combo3Dcmap = new(_Globals.CMapsPath, "combo3Dcmap");
 
-        private TableLayoutPanel tableShpLine;
-        private Label lblShpLinePath;
-        private TextBox txtShpLinePath;
-        private Label lblShpLineType;
-        private TextBox txtShpLineType;
-        private Label lblShpLineColor;
-        private Panel pnlShpLineColor;
-        private Button btnShpLineColor;
-        private Label lblShpLineLineWidth;
-        private TextBox txtShpLineLineWidth;
-        private Label lblShpLineAlpha;
-        private NumericUpDown numShpLineAlpha;
+        private readonly TableLayoutPanel tableShpPoint = new();
+        private readonly Label lblShpPointPath = _Utils.CreateLabel("lblShpPointPath", "Path");
+        private readonly TextBox txtShpPointPath = _Utils.CreateTextBox("txtShpPointPath", "", false);
+        private readonly Label lblShpPointType = _Utils.CreateLabel("lblShpPointType", "Shapefile Type");
+        private readonly TextBox txtShpPointType = _Utils.CreateTextBox("txtShpPointType", "", false);
+        private readonly Label lblShpPointColor = _Utils.CreateLabel("lblShpPointColor", "Point Color");
+        private readonly Panel pnlShpPointColor = _Utils.CreatePanel("pnlShpPointColor", Color.White);
+        private readonly Button btnShpPointColor = _Utils.CreateButton("btnShpPointColor", "...");
+        private readonly Label lblShpPointMarker = _Utils.CreateLabel("lblShpPointMarker", "Marker");
+        private readonly ComboBox comboShpPointMarker = _Utils.CreateComboBox("comboShpPointMarker", ["o", "*", "^", "x"], 0);
+        private readonly Label lblShpPointMarkerSize = _Utils.CreateLabel("lblShpPointMarkerSize", "Marker Size");
+        private readonly NumericUpDown numShpPointMarkerSize = _Utils.CreateNumericUpDown("numShpPointMarkerSize", 1, 30, 12);
+        private readonly Label lblShpPointMarkerAlpha = _Utils.CreateLabel("lblShpPointMarkerAlpha", "Transparency");
+        private readonly NumericUpDown numShpPointMarkerAlpha = _Utils.CreateNumericUpDown("numShpPointMarkerAlpha", 0, 1, 1);
+        private readonly Label lblShpPointLabelText = _Utils.CreateLabel("lblShpPointLabelText", "Label Text");
+        private readonly TextBox txtShpPointLabelText = _Utils.CreateTextBox("txtShpPointLabelText", "");
+        private readonly Label lblShpPointLabelFontSize = _Utils.CreateLabel("lblShpPointLabelFontSize", "Font Size");
+        private readonly NumericUpDown numShpPointLabelFontSize = _Utils.CreateNumericUpDown("numShpPointLabelFontSize", 1, 30, 8);
+        private readonly Label lblShpPointLabelColor = _Utils.CreateLabel("lblShpPointLabelColor", "Label Color");
+        private readonly Panel pnlShpPointLabelColor = _Utils.CreatePanel("pnlShpPointLabelColor", Color.White);
+        private readonly Button btnShpPointLabelColor = _Utils.CreateButton("btnShpPointLabelColor", "...");
+        private readonly Label lblShpPointLabelHA = _Utils.CreateLabel("lblShpPointLabelHA", "Horizontal Alignment");
+        private readonly ComboBox comboShpPointLabelHA = _Utils.CreateComboBox("comboShpPointLabelHA", ["Left", "Center", "Right"], 0);
+        private readonly Label lblShpPointLabelVA = _Utils.CreateLabel("lblShpPointLabelVA", "Vertical Alignment");
+        private readonly ComboBox comboShpPointLabelVA = _Utils.CreateComboBox("comboShpPointLabelVA", ["Top", "Center", "Bottom"], 1);
+        private readonly Label lblShpPointLabelOffsetPointsX = _Utils.CreateLabel("lblShpPointLabelOffsetPointsX", "Offset Points X");
+        private readonly TextBox txtShpPointLabelOffsetPointsX = _Utils.CreateTextBox("txtShpPointLabelOffsetPointsX", "0");
+        private readonly Label lblShpPointLabelOffsetPointsY = _Utils.CreateLabel("lblShpPointLabelOffsetPointsY", "Offset Points Y");
+        private readonly TextBox txtShpPointLabelOffsetPointsY = _Utils.CreateTextBox("txtShpPointLabelOffsetPointsY", "0");
+        private readonly Label lblShpPointLabelOffsetDataX = _Utils.CreateLabel("lblShpPointLabelOffsetDataX", "Offset Data X");
+        private readonly TextBox txtShpPointLabelOffsetDataX = _Utils.CreateTextBox("txtShpPointLabelOffsetDataX", "0");
+        private readonly Label lblShpPointLabelOffsetDataY = _Utils.CreateLabel("lblShpPointLabelOffsetDataY", "Offset Data Y");
+        private readonly TextBox txtShpPointLabelOffsetDataY = _Utils.CreateTextBox("txtShpPointLabelOffsetDataY", "0");
 
-        private TableLayoutPanel tableShpPoly;
-        private Label lblShpPolyPath;
-        private TextBox txtShpPolyPath;
-        private Label lblShpPolyType;
-        private TextBox txtShpPolyType;
-        private Label lblShpPolyEdgeColor;
-        private Panel pnlShpPolyEdgeColor;
-        private Button btnShpPolyEdgeColor;
-        private Label lblShpPolyLineWidth;
-        private TextBox txtShpPolyLineWidth;
-        private Label lblShpPolyFaceColor;
-        private Panel pnlShpPolyFaceColor;
-        private Button btnShpPolyFaceColor;
-        private Label lblShpPolyAlpha;
-        private NumericUpDown numShpPolyAlpha;
+        private readonly TableLayoutPanel tableShpLine = new();
+        private readonly Label lblShpLinePath = _Utils.CreateLabel("lblShpLinePath", "Path");
+        private readonly TextBox txtShpLinePath = _Utils.CreateTextBox("txtShpLinePath", "");
+        private readonly Label lblShpLineType = _Utils.CreateLabel("lblShpLineType", "Type");
+        private readonly TextBox txtShpLineType = _Utils.CreateTextBox("txtShpLineType", "");
+        private readonly Label lblShpLineColor = _Utils.CreateLabel("lblShpLineColor", "Color");
+        private readonly Panel pnlShpLineColor = _Utils.CreatePanel("pnlShpLineColor", Color.White);
+        private readonly Button btnShpLineColor = _Utils.CreateButton("btnShpLineColor", "...");
+        private readonly Label lblShpLineLineWidth = _Utils.CreateLabel("lblShpLineLineWidth", "Line Width");
+        private readonly TextBox txtShpLineLineWidth = _Utils.CreateTextBox("txtShpLineLineWidth", "");
+        private readonly Label lblShpLineAlpha = _Utils.CreateLabel("lblShpLineAlpha", "Transparency");
+        private readonly NumericUpDown numShpLineAlpha = _Utils.CreateNumericUpDown("numShpLineAlpha", 0, 1, 1);
+        private readonly Label lblShpLineLabelText = _Utils.CreateLabel("lblShpLineLabelText", "Label Text");
+        private readonly TextBox txtShpLineLabelText = _Utils.CreateTextBox("txtShpLineLabelText", "");
+        private readonly Label lblShpLineLabelFontSize = _Utils.CreateLabel("lblShpLineLabelFontSize", "Font Size");
+        private readonly NumericUpDown numShpLineLabelFontSize = _Utils.CreateNumericUpDown("numShpLineLabelFontSize", 0, 100, 12);
+        private readonly Label lblShpLineLabelColor = _Utils.CreateLabel("lblShpLineLabelColor", "Label Color");
+        private readonly Panel pnlShpLineLabelColor = _Utils.CreatePanel("pnlShpLineLabelColor", Color.White);
+        private readonly Button btnShpLineLabelColor = _Utils.CreateButton("btnShpLineLabelColor", "...");
+        private readonly Label lblShpLineLabelHA = _Utils.CreateLabel("lblShpLineLabelHA", "Horizontal Alignment");
+        private readonly ComboBox comboShpLineLabelHA = _Utils.CreateComboBox("comboShpLineLabelHA", ["Left", "Center", "Right"], 0);
+        private readonly Label lblShpLineLabelVA = _Utils.CreateLabel("lblShpLineLabelVA", "Vertical Alignment");
+        private readonly ComboBox comboShpLineLabelVA = _Utils.CreateComboBox("comboShpLineLabelVA", ["Top", "Middle", "Bottom"], 0);
+        private readonly Label lblShpLineLabelOffsetPointsX = _Utils.CreateLabel("lblShpLineLabelOffsetPointsX", "Offset Points X");
+        private readonly TextBox txtShpLineLabelOffsetPointsX = _Utils.CreateTextBox("txtShpLineLabelOffsetPointsX", "0");
+        private readonly Label lblShpLineLabelOffsetPointsY = _Utils.CreateLabel("lblShpLineLabelOffsetPointsY", "Offset Points Y");
+        private readonly TextBox txtShpLineLabelOffsetPointsY = _Utils.CreateTextBox("txtShpLineLabelOffsetPointsY", "0");
+        private readonly Label lblShpLineLabelOffsetDataX = _Utils.CreateLabel("lblShpLineLabelOffsetDataX", "Offset Data X");
+        private readonly TextBox txtShpLineLabelOffsetDataX = _Utils.CreateTextBox("txtShpLineLabelOffsetDataX", "0");
+        private readonly Label lblShpLineLabelOffsetDataY = _Utils.CreateLabel("lblShpLineLabelOffsetDataY", "Offset Data Y");
+        private readonly TextBox txtShpLineLabelOffsetDataY = _Utils.CreateTextBox("txtShpLineLabelOffsetDataY", "0");
 
-        private Label lblShpPointLabelText;
-        private TextBox txtShpPointLabelText;
-        private Label lblShpPointLabelFontSize;
-        private NumericUpDown numShpPointLabelFontSize;
-        private Label lblShpPointLabelColor;
-        private Panel pnlShpPointLabelColor;
-        private Button btnShpPointLabelColor;
-        private Label lblShpPointLabelHA;
-        private ComboBox comboShpPointLabelHA;
-        private Label lblShpPointLabelVA;
-        private ComboBox comboShpPointLabelVA;
-        private Label lblShpPointLabelOffsetPointsX;
-        private TextBox txtShpPointLabelOffsetPointsX;
-        private Label lblShpPointLabelOffsetPointsY;
-        private TextBox txtShpPointLabelOffsetPointsY;
-        private Label lblShpPointLabelOffsetDataX;
-        private TextBox txtShpPointLabelOffsetDataX;
-        private Label lblShpPointLabelOffsetDataY;
-        private TextBox txtShpPointLabelOffsetDataY;
-
-        private Label lblShpLineLabelText;
-        private TextBox txtShpLineLabelText;
-        private Label lblShpLineLabelFontSize;
-        private NumericUpDown numShpLineLabelFontSize;
-        private Label lblShpLineLabelColor;
-        private Panel pnlShpLineLabelColor;
-        private Button btnShpLineLabelColor;
-        private Label lblShpLineLabelHA;
-        private ComboBox comboShpLineLabelHA;
-        private Label lblShpLineLabelVA;
-        private ComboBox comboShpLineLabelVA;
-        private Label lblShpLineLabelOffsetPointsX;
-        private TextBox txtShpLineLabelOffsetPointsX;
-        private Label lblShpLineLabelOffsetPointsY;
-        private TextBox txtShpLineLabelOffsetPointsY;
-        private Label lblShpLineLabelOffsetDataX;
-        private TextBox txtShpLineLabelOffsetDataX;
-        private Label lblShpLineLabelOffsetDataY;
-        private TextBox txtShpLineLabelOffsetDataY;
-
-        private Label lblShpPolyLabelText;
-        private TextBox txtShpPolyLabelText;
-        private Label lblShpPolyLabelFontSize;
-        private NumericUpDown numShpPolyLabelFontSize;
-        private Label lblShpPolyLabelColor;
-        private Panel pnlShpPolyLabelColor;
-        private Button btnShpPolyLabelColor;
-        private Label lblShpPolyLabelHA;
-        private ComboBox comboShpPolyLabelHA;
-        private Label lblShpPolyLabelVA;
-        private ComboBox comboShpPolyLabelVA;
-        private Label lblShpPolyLabelOffsetPointsX;
-        private TextBox txtShpPolyLabelOffsetPointsX;
-        private Label lblShpPolyLabelOffsetPointsY;
-        private TextBox txtShpPolyLabelOffsetPointsY;
-        private Label lblShpPolyLabelOffsetDataX;
-        private TextBox txtShpPolyLabelOffsetDataX;
-        private Label lblShpPolyLabelOffsetDataY;
-        private TextBox txtShpPolyLabelOffsetDataY;
-
-        private static Label CreateLabel(string name, string text)
-        {
-            return new Label
-            {
-                Dock = DockStyle.Fill,
-                Name = name,
-                Text = text,
-                TextAlign = ContentAlignment.MiddleLeft
-            };
-        }
-        private static TextBox CreateTextBox(string name, string text = "", bool enabled = true)
-        {
-            TextBox textBox = new()
-            {
-                Text = text,
-                Dock = DockStyle.Fill,
-                Name = name,
-                Enabled = enabled
-            };
-            return textBox;
-        }
-        private static ComboBox CreateComboBox(string name, string[] items, int selectedIndex = 0)
-        {
-            var comboBox = new ComboBox
-            {
-                Dock = DockStyle.Fill,
-                Name = name,
-                DropDownStyle = ComboBoxStyle.DropDownList
-            };
-            comboBox.Items.AddRange(items);
-            comboBox.SelectedIndex = selectedIndex;
-            return comboBox;
-        }
-        private static NumericUpDown CreateNumericUpDown(string name, decimal min, decimal max, decimal value, bool enabled = true)
-        {
-            NumericUpDown numericUpDown = new()
-            {
-                Dock = DockStyle.Fill,
-                Name = name,
-                Minimum = min,
-                Maximum = max,
-                Value = value,
-                Enabled = enabled
-            };
-            return numericUpDown;
-        }
-        private static CheckBox CreateCheckBox(string name, string text, bool isChecked)
-        {
-            CheckBox checkBox = new()
-            {
-                Dock = DockStyle.Fill,
-                Name = name,
-                Text = text,
-                TextAlign = ContentAlignment.MiddleLeft,
-                Checked = isChecked
-            };
-            return checkBox;
-        }
-        private static Button CreateButton(string name, string text)
-        {
-            Button button = new()
-            {
-                Dock = DockStyle.Fill,
-                Name = name,
-                Text = text
-            };
-            return button;
-        }
-        private static Panel CreateColorPanel(string name, Color backColor)
-        {
-            Panel panel = new()
-            {
-                Dock = DockStyle.Fill,
-                Name = name,
-                BackColor = backColor,
-            };
-            return panel;
-        }
+        private readonly TableLayoutPanel tableShpPoly = new();
+        private readonly Label lblShpPolyPath = _Utils.CreateLabel("lblShpPolyPath", "Path");
+        private readonly TextBox txtShpPolyPath = _Utils.CreateTextBox("txtShpPolyPath", "");
+        private readonly Label lblShpPolyType = _Utils.CreateLabel("lblShpPolyType", "Shapefile Type");
+        private readonly TextBox txtShpPolyType = _Utils.CreateTextBox("txtShpPolyType", "");
+        private readonly Label lblShpPolyEdgeColor = _Utils.CreateLabel("lblShpPolyEdgeColor", "Edge Color");
+        private readonly Panel pnlShpPolyEdgeColor = _Utils.CreatePanel("pnlShpPolyEdgeColor", Color.White);
+        private readonly Button btnShpPolyEdgeColor = _Utils.CreateButton("btnShpPolyEdgeColor", "...");
+        private readonly Label lblShpPolyLineWidth = _Utils.CreateLabel("lblShpPolyLineWidth", "Line Width");
+        private readonly TextBox txtShpPolyLineWidth = _Utils.CreateTextBox("txtShpPolyLineWidth", "");
+        private readonly Label lblShpPolyFaceColor = _Utils.CreateLabel("lblShpPolyFaceColor", "Face Color");
+        private readonly Panel pnlShpPolyFaceColor = _Utils.CreatePanel("pnlShpPolyFaceColor", Color.White);
+        private readonly Button btnShpPolyFaceColor = _Utils.CreateButton("btnShpPolyFaceColor", "...");
+        private readonly Label lblShpPolyAlpha = _Utils.CreateLabel("lblShpPolyAlpha", "Alpha");
+        private readonly NumericUpDown numShpPolyAlpha = _Utils.CreateNumericUpDown("numShpPolyAlpha", 0, 255, 255);
+        private readonly Label lblShpPolyLabelText = _Utils.CreateLabel("lblShpPolyLabelText", "Label Text");
+        private readonly TextBox txtShpPolyLabelText = _Utils.CreateTextBox("txtShpPolyLabelText", "");
+        private readonly Label lblShpPolyLabelFontSize = _Utils.CreateLabel("lblShpPolyLabelFontSize", "Font Size");
+        private readonly NumericUpDown numShpPolyLabelFontSize = _Utils.CreateNumericUpDown("numShpPolyLabelFontSize", 1, 30, 8);
+        private readonly Label lblShpPolyLabelColor = _Utils.CreateLabel("lblShpPolyLabelColor", "Label Color");
+        private readonly Panel pnlShpPolyLabelColor = _Utils.CreatePanel("pnlShpPolyLabelColor", Color.White);
+        private readonly Button btnShpPolyLabelColor = _Utils.CreateButton("btnShpPolyLabelColor", "...");
+        private readonly Label lblShpPolyLabelHA = _Utils.CreateLabel("lblShpPolyLabelHA", "Horizontal Alignment");
+        private readonly ComboBox comboShpPolyLabelHA = _Utils.CreateComboBox("comboShpPolyLabelHA", ["Left", "Center", "Right"], 0);
+        private readonly Label lblShpPolyLabelVA = _Utils.CreateLabel("lblShpPolyLabelVA", "Vertical Alignment");
+        private readonly ComboBox comboShpPolyLabelVA = _Utils.CreateComboBox("comboShpPolyLabelVA", ["Top", "Center", "Bottom"], 1);
+        private readonly Label lblShpPolyLabelOffsetPointsX = _Utils.CreateLabel("lblShpPolyLabelOffsetPointsX", "Offset Points X");
+        private readonly TextBox txtShpPolyLabelOffsetPointsX = _Utils.CreateTextBox("txtShpPolyLabelOffsetPointsX", "0");
+        private readonly Label lblShpPolyLabelOffsetPointsY = _Utils.CreateLabel("lblShpPolyLabelOffsetPointsY", "Offset Points Y");
+        private readonly TextBox txtShpPolyLabelOffsetPointsY = _Utils.CreateTextBox("txtShpPolyLabelOffsetPointsY", "0");
+        private readonly Label lblShpPolyLabelOffsetDataX = _Utils.CreateLabel("lblShpPolyLabelOffsetDataX", "Offset Data X");
+        private readonly TextBox txtShpPolyLabelOffsetDataX = _Utils.CreateTextBox("txtShpPolyLabelOffsetDataX", "0");
+        private readonly Label lblShpPolyLabelOffsetDataY = _Utils.CreateLabel("lblShpPolyLabelOffsetDataY", "Offset Data Y");
+        private readonly TextBox txtShpPolyLabelOffsetDataY = _Utils.CreateTextBox("txtShpPolyLabelOffsetDataY", "0");
 
         private void InitializeShpTab()
         {
@@ -223,38 +144,6 @@ namespace Plume_Track
 
         private void InitializeShpProperties()
         {
-            lblShpPointPath = CreateLabel("lblShpPointPath", "Path");
-            txtShpPointPath = CreateTextBox("txtShpPointPath", enabled: false);
-            lblShpPointType = CreateLabel("lblShpPointType", "Shapefile Type");
-            txtShpPointType = CreateTextBox("txtShpPointType", enabled: false);
-            lblShpPointColor = CreateLabel("lblShpPointColor", "Point Color");
-            pnlShpPointColor = CreateColorPanel("pnlShpPointColor", Color.White);
-            btnShpPointColor = CreateButton("btnShpPointColor", "...");
-            lblShpPointMarker = CreateLabel("lblShpPointMarker", "Marker");
-            comboShpPointMarker = CreateComboBox("comboShpPointMarker", ["o", "*", "^", "x"], 0);
-            lblShpPointMarkerSize = CreateLabel("lblShpPointMarkerSize", "Marker Size");
-            numShpPointMarkerSize = CreateNumericUpDown("numShpPointMarkerSize", 1, 30, 12);
-            lblShpPointMarkerAlpha = CreateLabel("lblShpPointMarkerAlpha", "Transparency");
-            numShpPointMarkerAlpha = CreateNumericUpDown("numShpPointMarkerAlpha", 0, 1, 1);
-            lblShpPointLabelText = CreateLabel("lblShpPointLabelText", "Label Text");
-            txtShpPointLabelText = CreateTextBox("txtShpPointLabelText");
-            lblShpPointLabelFontSize = CreateLabel("lblShpPointLabelFontSize", "Font Size");
-            numShpPointLabelFontSize = CreateNumericUpDown("numShpPointLabelFontSize", 1, 30, 8);
-            lblShpPointLabelColor = CreateLabel("lblShpPointLabelColor", "Label Color");
-            pnlShpPointLabelColor = CreateColorPanel("pnlShpPointLabelColor", Color.White);
-            btnShpPointLabelColor = CreateButton("btnShpPointLabelColor", "...");
-            lblShpPointLabelHA = CreateLabel("lblShpPointLabelHA", "Horizontal Alignment");
-            comboShpPointLabelHA = CreateComboBox("comboShpPointLabelHA", ["Left", "Center", "Right"], 0);
-            lblShpPointLabelVA = CreateLabel("lblShpPointLabelVA", "Vertical Alignment");
-            comboShpPointLabelVA = CreateComboBox("comboShpPointLabelVA", ["Top", "Center", "Bottom"], 1);
-            lblShpPointLabelOffsetPointsX = CreateLabel("lblShpPointLabelOffsetPointsX", "Offset Points X");
-            txtShpPointLabelOffsetPointsX = CreateTextBox("txtShpPointLabelOffsetPointsX", "0");
-            lblShpPointLabelOffsetPointsY = CreateLabel("lblShpPointLabelOffsetPointsY", "Offset Points Y");
-            txtShpPointLabelOffsetPointsY = CreateTextBox("txtShpPointLabelOffsetPointsY", "0");
-            lblShpPointLabelOffsetDataX = CreateLabel("lblShpPointLabelOffsetDataX", "Offset Data X");
-            txtShpPointLabelOffsetDataX = CreateTextBox("txtShpPointLabelOffsetDataX", "0");
-            lblShpPointLabelOffsetDataY = CreateLabel("lblShpPointLabelOffsetDataY", "Offset Data Y");
-            txtShpPointLabelOffsetDataY = CreateTextBox("txtShpPointLabelOffsetDataY", "0");
             txtShpPointPath.TextChanged += txtShp_TextChanged;
             txtShpPointType.TextChanged += txtShp_TextChanged;
             pnlShpPointColor.BackColorChanged += pnlBackColor_Changed;
@@ -273,36 +162,6 @@ namespace Plume_Track
             txtShpPointLabelOffsetDataX.TextChanged += txtShp_TextChanged;
             txtShpPointLabelOffsetDataY.TextChanged += txtShp_TextChanged;
 
-            lblShpLinePath = CreateLabel("lblShpLinePath", "Path");
-            txtShpLinePath = CreateTextBox("txtShpLinePath", enabled: false);
-            lblShpLineType = CreateLabel("lblShpLineType", "Shapefile Type");
-            txtShpLineType = CreateTextBox("txtShpLineType", enabled: false);
-            lblShpLineColor = CreateLabel("lblShpLineColor", "Line Color");
-            pnlShpLineColor = CreateColorPanel("pnlShpLineColor", Color.White);
-            btnShpLineColor = CreateButton("btnShpLineColor", "...");
-            lblShpLineLineWidth = CreateLabel("lblShpLineLineWidth", "Line Width");
-            txtShpLineLineWidth = CreateTextBox("txtShpLineLineWidth", "1.0");
-            lblShpLineAlpha = CreateLabel("lblShpLineAlpha", "Transparency");
-            numShpLineAlpha = CreateNumericUpDown("numShpLineAlpha", 0, 1, 1);
-            lblShpLineLabelText = CreateLabel("lblShpLineLabelText", "Label Text");
-            txtShpLineLabelText = CreateTextBox("txtShpLineLabelText");
-            lblShpLineLabelFontSize = CreateLabel("lblShpLineLabelFontSize", "Font Size");
-            numShpLineLabelFontSize = CreateNumericUpDown("numShpLineLabelFontSize", 1, 30, 8);
-            lblShpLineLabelColor = CreateLabel("lblShpLineLabelColor", "Label Color");
-            pnlShpLineLabelColor = CreateColorPanel("pnlShpLineLabelColor", Color.White);
-            btnShpLineLabelColor = CreateButton("btnShpLineLabelColor", "...");
-            lblShpLineLabelHA = CreateLabel("lblShpLineLabelHA", "Horizontal Alignment");
-            comboShpLineLabelHA = CreateComboBox("comboShpLineLabelHA", ["Left", "Center", "Right"], 0);
-            lblShpLineLabelVA = CreateLabel("lblShpLineLabelVA", "Vertical Alignment");
-            comboShpLineLabelVA = CreateComboBox("comboShpLineLabelVA", ["Top", "Center", "Bottom"], 1);
-            lblShpLineLabelOffsetPointsX = CreateLabel("lblShpLineLabelOffsetPointsX", "Offset Points X");
-            txtShpLineLabelOffsetPointsX = CreateTextBox("txtShpLineLabelOffsetPointsX", "0");
-            lblShpLineLabelOffsetPointsY = CreateLabel("lblShpLineLabelOffsetPointsY", "Offset Points Y");
-            txtShpLineLabelOffsetPointsY = CreateTextBox("txtShpLineLabelOffsetPointsY", "0");
-            lblShpLineLabelOffsetDataX = CreateLabel("lblShpLineLabelOffsetDataX", "Offset Data X");
-            txtShpLineLabelOffsetDataX = CreateTextBox("txtShpLineLabelOffsetDataX", "0");
-            lblShpLineLabelOffsetDataY = CreateLabel("lblShpLineLabelOffsetDataY", "Offset Data Y");
-            txtShpLineLabelOffsetDataY = CreateTextBox("txtShpLineLabelOffsetDataY", "0");
             txtShpLinePath.TextChanged += txtShp_TextChanged;
             txtShpLineType.TextChanged += txtShp_TextChanged;
             pnlShpLineColor.BackColorChanged += pnlBackColor_Changed;
@@ -320,39 +179,6 @@ namespace Plume_Track
             txtShpLineLabelOffsetDataX.TextChanged += txtShp_TextChanged;
             txtShpLineLabelOffsetDataY.TextChanged += txtShp_TextChanged;
 
-            lblShpPolyPath = CreateLabel("lblShpPolyPath", "Path");
-            txtShpPolyPath = CreateTextBox("txtShpPolyPath", enabled: false);
-            lblShpPolyType = CreateLabel("lblShpPolyType", "Shapefile Type");
-            txtShpPolyType = CreateTextBox("txtShpPolyType", enabled: false);
-            lblShpPolyEdgeColor = CreateLabel("lblShpPolyEdgeColor", "Edge Color");
-            pnlShpPolyEdgeColor = CreateColorPanel("pnlShpPolyEdgeColor", Color.White);
-            btnShpPolyEdgeColor = CreateButton("btnShpPolyEdgeColor", "...");
-            lblShpPolyLineWidth = CreateLabel("lblShpPolyLineWidth", "Line Width");
-            txtShpPolyLineWidth = CreateTextBox("txtShpPolyLineWidth", "0.8");
-            lblShpPolyFaceColor = CreateLabel("lblShpPolyFaceColor", "Face Color");
-            pnlShpPolyFaceColor = CreateColorPanel("pnlShpPolyFaceColor", Color.White);
-            btnShpPolyFaceColor = CreateButton("btnShpPolyFaceColor", "...");
-            lblShpPolyAlpha = CreateLabel("lblShpPolyAlpha", "Transparency");
-            numShpPolyAlpha = CreateNumericUpDown("numShpPolyAlpha", 0, 1, 1);
-            lblShpPolyLabelText = CreateLabel("lblShpPolyLabelText", "Label Text");
-            txtShpPolyLabelText = CreateTextBox("txtShpPolyLabelText");
-            lblShpPolyLabelFontSize = CreateLabel("lblShpPolyLabelFontSize", "Font Size");
-            numShpPolyLabelFontSize = CreateNumericUpDown("numShpPolyLabelFontSize", 1, 30, 8);
-            lblShpPolyLabelColor = CreateLabel("lblShpPolyLabelColor", "Label Color");
-            pnlShpPolyLabelColor = CreateColorPanel("pnlShpPolyLabelColor", Color.White);
-            btnShpPolyLabelColor = CreateButton("btnShpPolyLabelColor", "...");
-            lblShpPolyLabelHA = CreateLabel("lblShpPolyLabelHA", "Horizontal Alignment");
-            comboShpPolyLabelHA = CreateComboBox("comboShpPolyLabelHA", ["Left", "Center", "Right"], 0);
-            lblShpPolyLabelVA = CreateLabel("lblShpPolyLabelVA", "Vertical Alignment");
-            comboShpPolyLabelVA = CreateComboBox("comboShpPolyLabelVA", ["Top", "Center", "Bottom"], 1);
-            lblShpPolyLabelOffsetPointsX = CreateLabel("lblShpPolyLabelOffsetPointsX", "Offset Points X");
-            txtShpPolyLabelOffsetPointsX = CreateTextBox("txtShpPolyLabelOffsetPointsX", "0");
-            lblShpPolyLabelOffsetPointsY = CreateLabel("lblShpPolyLabelOffsetPointsY", "Offset Points Y");
-            txtShpPolyLabelOffsetPointsY = CreateTextBox("txtShpPolyLabelOffsetPointsY", "0");
-            lblShpPolyLabelOffsetDataX = CreateLabel("lblShpPolyLabelOffsetDataX", "Offset Data X");
-            txtShpPolyLabelOffsetDataX = CreateTextBox("txtShpPolyLabelOffsetDataX", "0");
-            lblShpPolyLabelOffsetDataY = CreateLabel("lblShpPolyLabelOffsetDataY", "Offset Data Y");
-            txtShpPolyLabelOffsetDataY = CreateTextBox("txtShpPolyLabelOffsetDataY", "0");
             txtShpPolyPath.TextChanged += txtShp_TextChanged;
             txtShpPolyType.TextChanged += txtShp_TextChanged;
             pnlShpPolyEdgeColor.BackColorChanged += pnlBackColor_Changed;
@@ -372,9 +198,6 @@ namespace Plume_Track
             txtShpPolyLabelOffsetDataX.TextChanged += txtShp_TextChanged;
             txtShpPolyLabelOffsetDataY.TextChanged += txtShp_TextChanged;
 
-            tableShpPoint = new TableLayoutPanel();
-            tableShpLine = new TableLayoutPanel();
-            tableShpPoly = new TableLayoutPanel();
         }
 
         private static void AddTo(TableLayoutPanel host, Control c, int col, int row)
@@ -964,8 +787,8 @@ namespace Plume_Track
         public MapOptions()
         {
             InitializeComponent();
-            combo2Dcmap = new ColormapComboBox(_Globals.CMapsPath, "combo2Dcmap");
-            combo3Dcmap = new ColormapComboBox(_Globals.CMapsPath, "combo3Dcmap");
+            table2D.Controls.Add(combo2Dcmap, 1, 2);
+            table3D.Controls.Add(combo3Dcmap, 1, 2);
             InitializeShpTab();
             mapSettings = _ClassConfigurationManager.GetObject("MapSettings", "2");
             if (mapSettings == null)
