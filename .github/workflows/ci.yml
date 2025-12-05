@@ -34,7 +34,7 @@ jobs:
       # Install MkDocs and its dependencies (Material, PDF, Math)
       - name: Install dependencies
         run: |
-          pip install mkdocs mkdocs-material mkdocs-with-pdf pymdown-extensions
+          pip install mkdocs mkdocs-material mkdocs-with-pdf pymdown-extensions mkdocs-caption
 
       # Configure GitHub Pages environment
       - name: Configure GitHub Pages
