@@ -1,0 +1,56 @@
+name: Deploy Docs
+
+# Controls when the workflow will run
+on:
+  # Triggers the workflow on pushes to the main branch
+  push:
+    branches:
+      - main
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+# Sets permissions needed for the deployment action
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# A workflow run is made up of one or more jobs
+jobs:
+  # This job handles the deployment
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Checkout the repository
+      - uses: actions/checkout@v4
+
+      # Setup Python environment
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: 3.x
+
+      # Install MkDocs and its dependencies (Material, PDF, Math)
+      - name: Install dependencies
+        run: |
+          pip install mkdocs mkdocs-material mkdocs-with-pdf pymdown-extensions
+
+      # Configure GitHub Pages environment
+      - name: Configure GitHub Pages
+        uses: actions/configure-pages@v5
+
+      # Build the MkDocs site
+      - name: Build MkDocs Site
+        run: mkdocs build
+      
+      # Upload the artifacts (the 'site' folder)
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: './site' # Path to your built documentation
+
+      # Deploy to GitHub Pages
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
